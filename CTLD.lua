@@ -27,6 +27,7 @@ ctld.Id = "CTLD - "
 
 --- Version.
 ctld.Version = "20211113.01"
+ctld.buzVersion = "Buz101"
 
 -- debug level, specific to this module
 ctld.Debug = true
