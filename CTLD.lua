@@ -42,15 +42,13 @@ ctld.staticBugWorkaround = false --  DCS had a bug where destroying statics woul
 
 ctld.disableAllSmoke = false -- if true, all smoke is diabled at pickup and drop off zones regardless of settings below. Leave false to respect settings below
 
-ctld.hoverPickup = false --  if set to false you can load crates with the F10 menu instead of hovering... Only if not using real crates!
+ctld.hoverPickup = true --  if set to false you can load crates with the F10 menu instead of hovering... Only if not using real crates!
 
 ctld.enableCrates = true -- if false, Helis will not be able to spawn or unpack crates so will be normal CTTS
-ctld.slingLoad = false -- if false, crates can be used WITHOUT slingloading, by hovering above the crate, simulating slingloading but not the weight...
+ctld.slingLoad = true -- if false, crates can be used WITHOUT slingloading, by hovering above the crate, simulating slingloading but not the weight...
 -- There are some bug with Sling-loading that can cause crashes, if these occur set slingLoad to false
 -- to use the other method.
 -- Set staticBugFix  to FALSE if use set ctld.slingLoad to TRUE
-ctld.internalCargo = true -- if true, allow the internal carriage of some cargo
-ctld.internalCargoMass = true -- if true, add weight of the cargo to the helicopter when loading troops or internal cargo
 
 ctld.enableSmokeDrop = true -- if false, helis and c-130 will not be able to drop smoke
 
@@ -150,9 +148,6 @@ ctld.JTAC_location = true -- shows location of target in JTAC message
 ctld.location_DMS = false -- shows coordinates as Degrees Minutes Seconds instead of Degrees Decimal minutes
 
 ctld.JTAC_lock = "all" -- "vehicle" OR "troop" OR "all" forces JTAC to only lock vehicles or troops or all ground units
-
-ctld.redCountry = 7		-- Examples: Russia: 0, Ukraine: 1, Aggressors: 7, Insurgents: 17, China: 27, Iran: 34, Iraq: 35, North Korea: 38, USSR: 68 
-ctld.blueCountry = 2	-- Examples: USA: 2, UK: 4, Candada: 8, Israel: 15, Georgia: 16, Australia: 21
 
 -- ***************** Pickup, dropoff and waypoint zones *****************
 
@@ -431,12 +426,6 @@ ctld.unitLoadLimits = {
 
     -- Remove the -- below to turn on options
     -- ["SA342Mistral"] = 4,
-    ["UH-1H"] = 8,
-	["Mi-8MT"] = 20,				 
-	["SA342M"] = 2,
-	["SA342L"] = 2,
-	["SA342Mistral"] = 2,			
-	["Mi-24P"] = 8,				 
     -- ["SA342L"] = 4,
     -- ["SA342M"] = 4,
 
@@ -463,11 +452,7 @@ ctld.unitActions = {
     -- ["SA342Mistral"] = {crates=true, troops=true},
     -- ["SA342L"] = {crates=false, troops=true},
     -- ["SA342M"] = {crates=false, troops=true},
-	["SA342Mistral"] = {crates=false, troops=true, internal=false},
-	["SA342L"] = {crates=false, troops=true, internal=false},
-	["SA342M"] = {crates=false, troops=true, internal=false},
-	["Ka-50"] = {crates=true, troops=false, internal=false},
-	["Mi-24P"] = {crates=true, troops=true, internal=true},
+
 }
 
 -- ************** WEIGHT CALCULATIONS FOR INFANTRY GROUPS ******************
@@ -502,16 +487,12 @@ ctld.JTAC_WEIGHT = 15 -- kg
 -- You can also add an optional coalition side to limit the group to one side
 -- for the side - 2 is BLUE and 1 is RED
 ctld.loadableGroups = {
-    {name = "Standard Group", inf = 7, at = 2, mg = 1, side = 1 }, -- will make a loadable group with 5 infantry, 2 MGs and 2 anti-tank for both coalitions
-	{name = "Standard Group [Mi-8]", inf = 13, at = 4, mg = 2, side = 1 },
-	{name = "2-man MG Team", mg = 2, side = 1 },
-	{name = "2-man RPG Team", at = 2, side = 1 },
-    {name = "Anti Tank", inf = 2, mg = 1, at = 6},
-    {name = "Anti Tank [Mi-24]", inf = 3, at = 4, side = 1 },
-	{name = "Anti Tank [Mi-8]", inf = 8, at = 8, mg = 4, side = 1 },
-	{name = "Mortar Squad", inf = 4, mg = 1, mortar = 5, side = 1 },
+    {name = "Standard Group 10 ", inf = 4, mg = 2, at = 4 }, -- will make a loadable group with 6 infantry, 2 MGs and 2 anti-tank for both coalitions
+    {name = "Anti Air", inf = 4, aa = 4  },
+    {name = "Anti Tank", inf = 4, at = 6  },
     {name = "JTAC Group", inf = 4, jtac = 1, at = 5 }, -- will make a loadable group with 4 infantry and a JTAC soldier for both coalitions
     {name = "Single JTAC", jtac = 1 }, -- will make a loadable group witha single JTAC soldier for both coalitions
+    -- {name = "Mortar Squad Red", inf = 2, mortar = 5, side =1 }, --would make a group loadable by RED only
 }
 
 -- ************** SPAWNABLE CRATES ******************
@@ -530,26 +511,30 @@ ctld.spawnableCrates = {
         -- dont use that option with the HAWK Crates
         { weight = 500, desc = "HMMWV - TOW", unit = "M1045 HMMWV TOW", side = 2 },
         { weight = 505, desc = "HMMWV - MG", unit = "M1043 HMMWV Armament", side = 2 },
+		
+		{ weight = 502, desc = "M-1 Abrams", unit = "M-1 Abrams", side = 2,  cratesRequired = 2 },
+	    { weight = 503, desc = "M-2 Bradley", unit = "M-2 Bradley", side = 2, cratesRequired = 2   },
+        { weight = 504, desc = "Vulcan", unit = "Vulcan", side = 2, cratesRequired = 2  },
 
         { weight = 510, desc = "BTR-D", unit = "BTR_D", side = 2 },
         { weight = 515, desc = "BRDM-2", unit = "BRDM-2", side = 2 },
 
-        { weight = 520, desc = "HMMWV - JTAC", unit = "Hummer", side = 1, }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
+        { weight = 520, desc = "HMMWV - JTAC", unit = "Hummer", side = 2, }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
         { weight = 525, desc = "SKP-11 - JTAC", unit = "SKP-11", side = 2, }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
 
         { weight = 100, desc = "2B11 Mortar", unit = "2B11 mortar" },
 
         { weight = 250, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 2, },
-        { weight = 255, desc = "M-109", unit = "M-109", side = 1, },
+        { weight = 255, desc = "M-109", unit = "M-109", side = 2, },
 
-        { weight = 252, desc = "Ural-375 Ammo Truck", unit = "Ural-375", side = 1,  },
+        { weight = 252, desc = "Ural-375 Ammo Truck", unit = "Ural-375", side = 2,  },
         { weight = 253, desc = "M-818 Ammo Truck", unit = "M 818", side = 2,  },
 		
 
         { weight = 800, desc = "FOB Crate - Small", unit = "FOB-SMALL" }, -- Builds a FOB! - requires 3 * ctld.cratesRequiredForFOB
     },
     ["AA short range"] = {
-        { weight = 50, desc = "Stinger", unit = "Soldier stinger", side = 1 },
+        { weight = 50, desc = "Stinger", unit = "Soldier stinger", side = 2 },
         { weight = 55, desc = "Igla", unit = "SA-18 Igla manpad", side = 1 },
 
         { weight = 405, desc = "Strela-1 9P31", unit = "Strela-1 9P31", side = 2,  },
@@ -559,7 +544,8 @@ ctld.spawnableCrates = {
 		{ weight = 404, desc = "Roland ADS", unit = "Roland ADS", side = 2, cratesRequired = 1 },
 		
 		{ weight = 405, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", side = 2, cratesRequired = 1 },
-		{ weight = 406, desc = "M163 Vulcan", unit = "Vulcan", side = 2, cratesRequired = 1 },	    
+		{ weight = 406, desc = "M163 Vulcan", unit = "Vulcan", side = 2, cratesRequired = 1 },			
+	    
     },
     ["AA mid range"] = {
         -- HAWK System
@@ -1557,7 +1543,6 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight,_side)
     local _crate
     local _spawnedCrate
 
-	local _crateType = ctld.crateLookupTable[tostring(_weight)]
     if ctld.staticBugWorkaround and ctld.slingLoad == false then
         local _groupId = ctld.getNextGroupId()
         local _groupName = "Crate Group #".._groupId
@@ -1588,13 +1573,13 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight,_side)
     else
 
         if ctld.slingLoad then
-			if _crateType["internal"] == 0 then
-				_crate = mist.utils.deepCopy(ctld.spawnableCratesModel_sling)
-				_crate["canCargo"] = true
-			else
-				_crate = mist.utils.deepCopy(ctld.spawnableCratesModel_load)
-				_crate["canCargo"] = true
-			end
+            _crate = mist.utils.deepCopy(ctld.spawnableCratesModel_sling)
+            _crate["canCargo"] = true
+    	else
+            _crate = mist.utils.deepCopy(ctld.spawnableCratesModel_load)
+            _crate["canCargo"] = false
+        end
+
         _crate["y"] = _point.z
         _crate["x"] = _point.x
         _crate["mass"] = _weight
@@ -1607,6 +1592,9 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight,_side)
 
         _spawnedCrate = StaticObject.getByName(_crate["name"])
     end
+
+
+    local _crateType = ctld.crateLookupTable[tostring(_weight)]
 
     if _side == 1 then
         ctld.spawnedCratesRED[_name] =_crateType
@@ -2753,7 +2741,7 @@ function ctld.loadNearbyCrate(_name)
 
             for _, _crate in pairs(_crates) do
 
-                if _crate.dist < 50.0 and _crate.details.internal ~= 0 then
+                if _crate.dist < 50.0 then
                     ctld.displayMessageToGroup(_transUnit, "Loaded  " .. _crate.details.desc .. " crate!", 10,true)
 
                     if _transUnit:getCoalition() == 1 then
@@ -4195,10 +4183,6 @@ function ctld.spawnCrateGroup(_heli, _positions, _types)
 
     local _spawnedGroup = Group.getByName(mist.dynAdd(_group).name)
 
-	local _dest = _spawnedGroup:getUnit(1):getPoint()
-    _dest = { x = _dest.x + 0.5, _y = _dest.y + 0.5, z = _dest.z + 0.5 }
-
-    ctld.orderGroupToMoveToPoint(_spawnedGroup:getUnit(1), _dest)
     return _spawnedGroup
 end
 
@@ -4613,9 +4597,6 @@ function ctld.inLogisticsZone(_heli)
     for _, _name in pairs(ctld.logisticUnits) do
 
         local _logistic = StaticObject.getByName(_name)
-		if _logistic == nil then
-			_logistic = Unit.getByName(_name)
-		end						  
 
         if _logistic ~= nil and _logistic:getCoalition() == _heli:getCoalition() then
 
@@ -4999,16 +4980,16 @@ function ctld.addF10MenuOptions()
 
                             local _crateCommands = missionCommands.addSubMenuForGroup(_groupId, "CTLD Commands", _rootPath)
                             if ctld.hoverPickup == false then
-                                --if  ctld.slingLoad == false then
+                                if  ctld.slingLoad == false then
                                     missionCommands.addCommandForGroup(_groupId, "Load Nearby Crate", _crateCommands, ctld.loadNearbyCrate,  _unitName )
-                                --end
+                                end
                             end
 
                             missionCommands.addCommandForGroup(_groupId, "Unpack Any Crate", _crateCommands, ctld.unpackCrates, { _unitName })
 
-                            --if ctld.slingLoad == false then
+                            if ctld.slingLoad == false then
                                 missionCommands.addCommandForGroup(_groupId, "Drop Crate", _crateCommands, ctld.dropSlingCrate, { _unitName })
-                            --end
+                            end
 
                             missionCommands.addCommandForGroup(_groupId, "List Nearby Crates", _crateCommands, ctld.listNearbyCrates, { _unitName })
 
