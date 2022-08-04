@@ -174,23 +174,29 @@ ctld.pickupZones = {
     { "pickzone2", "blue", -1, "yes", 0 },
     { "pickzone3", "blue", -1, "yes", 0 },
     { "pickzone4", "blue", -1, "yes", 0 },
-    { "pickzone5", "none", -1, "yes", 0 },
-    { "pickzone6", "none", -1, "yes", 0 },
-    { "pickzone7", "none", -1, "yes", 0 },
-    { "pickzone8", "none", -1, "yes", 0 },
-    { "pickzone9", "none", 5, "yes", 1 }, -- limits pickup zone 9 to 5 groups of soldiers or vehicles, only red can pick up
-    { "pickzone10", "none", 10, "yes", 2 },  -- limits pickup zone 10 to 10 groups of soldiers or vehicles, only blue can pick up
+    { "pickzone5", "blue", -1, "yes", 0 },
+    { "pickzone6", "blue", -1, "yes", 0 },
+    { "pickzone7", "blue", -1, "yes", 0 },
+    { "pickzone8", "blue", -1, "yes", 0 },
+    { "pickzone9", "blue", -1, "yes", 0 }, 
+    { "pickzone10", "blue", -1, "yes", 0 },
+    { "pickzone11", "blue", -1, "yes", 0 },
+    { "pickzone12", "blue", -1, "yes", 0 },
+    -- { "pickzone9", "blue", 5, "yes", 1 }, -- limits pickup zone 9 to 5 groups of soldiers or vehicles, only red can pick up
+    -- { "pickzone10", "blue", 10, "yes", 2 },  -- limits pickup zone 10 to 10 groups of soldiers or vehicles, only blue can pick up
 
-    { "pickzone11", "blue", 20, "no", 2 },  -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
-    { "pickzone12", "red", 20, "no", 1 },  -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
-    { "pickzone13", "none", -1, "yes", 0 },
-    { "pickzone14", "none", -1, "yes", 0 },
-    { "pickzone15", "none", -1, "yes", 0 },
-    { "pickzone16", "none", -1, "yes", 0 },
-    { "pickzone17", "none", -1, "yes", 0 },
-    { "pickzone18", "none", -1, "yes", 0 },
-    { "pickzone19", "none", 5, "yes", 0 },
-    { "pickzone20", "none", 10, "yes", 0, 1000 }, -- optional extra flag number to store the current number of groups available in
+    -- { "pickzone11", "blue", 20, "no", 2 },  -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
+    -- { "pickzone12", "blue", 20, "no", 1 },  -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
+    { "pickzone13", "blue", -1, "yes", 0 },
+    { "pickzone14", "blue", -1, "yes", 0 },
+    { "pickzone15", "blue", -1, "yes", 0 },
+    { "pickzone16", "blue", -1, "yes", 0 },
+    { "pickzone17", "blue", -1, "yes", 0 },
+    { "pickzone18", "blue", -1, "yes", 0 },
+    { "pickzone19", "blue", -1, "yes", 0 },
+    { "pickzone20", "blue", -1, "yes", 0 },
+    -- { "pickzone19", "blue", 5, "yes", 0 },
+    -- { "pickzone20", "blue", 10, "yes", 0, 1000 }, -- optional extra flag number to store the current number of groups available in
 
     { "USA Carrier", "blue", 10, "yes", 0, 1001 }, -- instead of a Zone Name you can also use the UNIT NAME of a ship
 }
@@ -198,16 +204,16 @@ ctld.pickupZones = {
 
 -- dropOffZones = {"name","smoke colour",0,side 1 = Red or 2 = Blue or 0 = Both sides}
 ctld.dropOffZones = {
-    { "dropzone1", "green", 2 },
-    { "dropzone2", "blue", 2 },
-    { "dropzone3", "orange", 2 },
-    { "dropzone4", "none", 2 },
-    { "dropzone5", "none", 1 },
-    { "dropzone6", "none", 1 },
-    { "dropzone7", "none", 1 },
-    { "dropzone8", "none", 1 },
-    { "dropzone9", "none", 1 },
-    { "dropzone10", "none", 1 },
+    { "dropzone1", "green", 0 },
+    { "dropzone2", "green", 0 },
+    { "dropzone3", "green", 0 },
+    { "dropzone4", "green", 0 },
+    { "dropzone5", "green", 0 },
+    { "dropzone6", "green", 0 },
+    { "dropzone7", "green", 0 },
+    { "dropzone8", "green", 0 },
+    { "dropzone9", "green", 0 },
+    { "dropzone10", "green", 0 }
 }
 
 
