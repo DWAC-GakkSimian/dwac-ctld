@@ -26,7 +26,7 @@ ctld = {} -- DONT REMOVE!
 ctld.Id = "CTLD - "
 
 --- Version.
-ctld.Version = "20211113.01"
+ctld.Version = "20220913.01"
 ctld.buzVersion = "Buz101"
 
 -- debug level, specific to this module
@@ -41,9 +41,9 @@ ctld.alreadyInitialized = false -- if true, ctld.initialize() will not run
 -- ************************************************************************
 ctld.staticBugWorkaround = false --  DCS had a bug where destroying statics would cause a crash. If this happens again, set this to TRUE
 
-ctld.disableAllSmoke = false -- if true, all smoke is diabled at pickup and drop off zones regardless of settings below. Leave false to respect settings below
+ctld.disableAllSmoke = true -- if true, all smoke is diabled at pickup and drop off zones regardless of settings below. Leave false to respect settings below
 
-ctld.hoverPickup = true --  if set to false you can load crates with the F10 menu instead of hovering... Only if not using real crates!
+ctld.hoverPickup = false --  if set to false you can load crates with the F10 menu instead of hovering... Only if not using real crates!
 
 ctld.enableCrates = true -- if false, Helis will not be able to spawn or unpack crates so will be normal CTTS
 ctld.slingLoad = true -- if false, crates can be used WITHOUT slingloading, by hovering above the crate, simulating slingloading but not the weight...
@@ -436,6 +436,15 @@ ctld.unitLoadLimits = {
     -- ["SA342L"] = 4,
     -- ["SA342M"] = 4,
 
+    -- Remove the -- below to turn on options
+    ["UH-1H"] = 10,
+	["Mi-8MT"] = 20,
+	["SA342M"] = 2,
+	["CH-47D"] = 33,
+	["SA342Mistral"] = 2,
+	["SA342L"] = 2,
+	["Mi-24V"] = 8,
+	["Mi-24P"] = 8
 }
 
 
@@ -459,6 +468,11 @@ ctld.unitActions = {
     -- ["SA342Mistral"] = {crates=true, troops=true},
     -- ["SA342L"] = {crates=false, troops=true},
     -- ["SA342M"] = {crates=false, troops=true},
+	["SA342Mistral"] = {crates=false, troops=true, internal=false},
+	["SA342L"] = {crates=false, troops=true, internal=false},
+	["SA342M"] = {crates=false, troops=true, internal=false},
+	["Ka-50"] = {crates=true, troops=false, internal=false},
+	["Mi-24P"] = {crates=true, troops=true, internal=true}
 
 }
 
@@ -516,42 +530,44 @@ ctld.spawnableCrates = {
         -- cratesRequired - if set requires that many crates of the same type within 100m of each other in order build the unit
         -- side is optional but 2 is BLUE and 1 is RED
         -- dont use that option with the HAWK Crates
-        { weight = 500, desc = "HMMWV - TOW", unit = "M1045 HMMWV TOW", side = 2 },
-        { weight = 505, desc = "HMMWV - MG", unit = "M1043 HMMWV Armament", side = 2 },
+		-- LIMIT to 12 per category and side or you won't see them in F1-12
+        { weight = 700, desc = "HMMWV - TOW(internal)", unit = "M1045 HMMWV TOW", side = 2, internal = 1, cratesRequired = 2 },
+		{ weight = 1335, desc = "HMMWV - TOW", unit = "M1045 HMMWV TOW", internal = 0, side = 2 },
+        { weight = 701, desc = "HMMWV - MG(internal)", unit = "M1043 HMMWV Armament", internal = 1, side = 2 },
+        { weight = 1334, desc = "HMMWV - MG", unit = "M1043 HMMWV Armament", internal = 0, side = 2 },
+        { weight = 1336, desc = "HMMWV - JTAC", unit = "Hummer", internal = 0, side = 2 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
+        { weight = 750, desc = "M-818 Ammo Truck(internal)", unit = "M 818", internal = 1, side = 2, cratesRequired = 2 },
+        { weight = 1500, desc = "M-818 Ammo Truck", unit = "M 818", internal = 0, side = 2 },
 		
-		{ weight = 502, desc = "M-1 Abrams", unit = "M-1 Abrams", side = 2,  cratesRequired = 2 },
-	    { weight = 503, desc = "M-2 Bradley", unit = "M-2 Bradley", side = 2, cratesRequired = 2   },
-        { weight = 504, desc = "Vulcan", unit = "Vulcan", side = 2, cratesRequired = 2  },
-
-        { weight = 510, desc = "BTR-D", unit = "BTR_D", side = 2 },
-        { weight = 515, desc = "BRDM-2", unit = "BRDM-2", side = 2 },
-
-        { weight = 520, desc = "HMMWV - JTAC", unit = "Hummer", side = 2, }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
-        { weight = 525, desc = "SKP-11 - JTAC", unit = "SKP-11", side = 2, }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
-
-        { weight = 100, desc = "2B11 Mortar", unit = "2B11 mortar" },
-
-        { weight = 250, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 2, },
-        { weight = 255, desc = "M-109", unit = "M-109", side = 2, },
-
-        { weight = 252, desc = "Ural-375 Ammo Truck", unit = "Ural-375", side = 2,  },
-        { weight = 253, desc = "M-818 Ammo Truck", unit = "M 818", side = 2,  },
-		
-
-        { weight = 800, desc = "FOB Crate - Small", unit = "FOB-SMALL" }, -- Builds a FOB! - requires 3 * ctld.cratesRequiredForFOB
+        { weight = 1300, desc = "SKP-11 - JTAC", unit = "SKP-11", internal = 0, side = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
+        { weight = 1486, desc = "Ural-375 Ammo Truck", unit = "Ural-375", internal = 0, side = 1 },
+        { weight = 2745, desc = "FOB Crate", unit = "FOB-SMALL", internal = 0, cratesRequired = 3 } -- Builds a FOB! - requires 3 * ctld.cratesRequiredForFOB
+        --{ weight = 100, desc = "2B11 Mortar", unit = "2B11 mortar" },
+        --{ weight = 250, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 2 },
+        --{ weight = 255, desc = "M-109", unit = "M-109", side = 2 },
     },
-    ["AA short range"] = {
-        { weight = 50, desc = "Stinger", unit = "Soldier stinger", side = 2 },
-        { weight = 55, desc = "Igla", unit = "SA-18 Igla manpad", side = 1 },
+	["Ground Forces: Heavy"] = {
+		{ weight = 2339, desc = "M-1 Abrams", unit = "M-1 Abrams", internal = 0, side = 2,  cratesRequired = 5 },
+	    { weight = 2338, desc = "M-2 Bradley", unit = "M-2 Bradley", internal = 0, side = 2, cratesRequired = 3   },
 
-        { weight = 405, desc = "Strela-1 9P31", unit = "Strela-1 9P31", side = 2,  },
-        { weight = 400, desc = "M1097 Avenger", unit = "M1097 Avenger", side = 2,  },
+        { weight = 1100, desc = "BTR-D", unit = "BTR_D", internal = 0, side = 2, cratesRequired = 2 },
+        { weight = 1101, desc = "BRDM-2", unit = "BRDM-2", internal = 0, side = 2, cratesRequired = 2 },
+
+	},
+    ["AA short range"] = {
+        --{ weight = 50, desc = "Stinger", unit = "Soldier stinger", side = 2 },
+        --{ weight = 55, desc = "Igla", unit = "SA-18 Igla manpad", side = 1 },
+
+		{ weight = 605, desc = "Strela-1 9P31(internal)", unit = "Strela-1 9P31", internal = 1, side = 1, cratesRequired = 2 },
+        { weight = 1153, desc = "Strela-1 9P31", unit = "Strela-1 9P31", internal = 0, side = 1 },
+        { weight = 604, desc = "M1097 Avenger(internal)", unit = "M1097 Avenger", internal = 1, side = 2, cratesRequired = 2 },
+        { weight = 1152, desc = "M1097 Avenger", unit = "M1097 Avenger", internal = 0, side = 2 },
+		{ weight = 2330, desc = "SA-19 Tunguska 2S6", unit = "2S6 Tunguska", internal = 0, side = 1, cratesRequired = 3 },
+		{ weight = 2331, desc = "Roland ADS", unit = "Roland ADS", internal = 0, side = 2, cratesRequired = 3 },
 		
-		{ weight = 399, desc = "SA-19 Tunguska 2S6", unit = "2S6 Tunguska", side = 2, cratesRequired = 1 },
-		{ weight = 404, desc = "Roland ADS", unit = "Roland ADS", side = 2, cratesRequired = 1 },
-		
-		{ weight = 405, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", side = 2, cratesRequired = 1 },
-		{ weight = 406, desc = "M163 Vulcan", unit = "Vulcan", side = 2, cratesRequired = 1 },			
+		{ weight = 405, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", side = 1, cratesRequired = 1 },
+        { weight = 2415, desc = "Vulcan(internal)", unit = "Vulcan", internal = 1, side = 2, cratesRequired = 4  },
+        { weight = 2415, desc = "Vulcan", unit = "Vulcan", internal = 0, side = 2, cratesRequired = 2  }
 	    
     },
     ["AA mid range"] = {
@@ -565,9 +581,9 @@ ctld.spawnableCrates = {
         -- End of HAWK
 
         -- KUB SYSTEM
-        { weight = 560, desc = "KUB Launcher", unit = "Kub 2P25 ln", side = 2},
-        { weight = 565, desc = "KUB Radar", unit = "Kub 1S91 str", side = 2 },
-        { weight = 570, desc = "KUB Repair", unit = "KUB Repair", side = 2},
+        { weight = 560, desc = "KUB Launcher", unit = "Kub 2P25 ln", side = 1},
+        { weight = 565, desc = "KUB Radar", unit = "Kub 1S91 str", side = 1 },
+        { weight = 570, desc = "KUB Repair", unit = "KUB Repair", side = 1},
         -- End of KUB
 
         -- BUK System
@@ -582,8 +598,8 @@ ctld.spawnableCrates = {
         { weight = 555, desc = "Patriot Launcher", unit = "Patriot ln", side = 2 },
         { weight = 556, desc = "Patriot Radar", unit = "Patriot str" , side = 2 },
         { weight = 557, desc = "Patriot ECS", unit = "Patriot ECS", side = 2 },
-        -- { weight = 553, desc = "Patriot ICC", unit = "Patriot cp", side = 2 },
-        -- { weight = 554, desc = "Patriot EPP", unit = "Patriot EPP", side = 2 },
+        { weight = 553, desc = "Patriot ICC", unit = "Patriot cp", side = 2 },
+        { weight = 554, desc = "Patriot EPP", unit = "Patriot EPP", side = 2 },
         { weight = 558, desc = "Patriot AMG (optional)", unit = "Patriot AMG" , side = 2 },
         { weight = 559, desc = "Patriot Repair", unit = "Patriot Repair" , side = 2 },
         -- End of Patriot
@@ -1550,6 +1566,8 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight,_side)
     local _crate
     local _spawnedCrate
 
+	local _crateType = ctld.crateLookupTable[tostring(_weight)]
+	
     if ctld.staticBugWorkaround and ctld.slingLoad == false then
         local _groupId = ctld.getNextGroupId()
         local _groupName = "Crate Group #".._groupId
@@ -1580,11 +1598,13 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight,_side)
     else
 
         if ctld.slingLoad then
-            _crate = mist.utils.deepCopy(ctld.spawnableCratesModel_sling)
-            _crate["canCargo"] = true
-    	else
-            _crate = mist.utils.deepCopy(ctld.spawnableCratesModel_load)
-            _crate["canCargo"] = false
+			if _crateType["internal"] == 0 then
+				_crate = mist.utils.deepCopy(ctld.spawnableCratesModel_sling)
+				_crate["canCargo"] = true
+			else
+				_crate = mist.utils.deepCopy(ctld.spawnableCratesModel_load)
+				_crate["canCargo"] = true
+			end
         end
 
         _crate["y"] = _point.z
@@ -2748,7 +2768,7 @@ function ctld.loadNearbyCrate(_name)
 
             for _, _crate in pairs(_crates) do
 
-                if _crate.dist < 50.0 then
+                if _crate.dist < 50.0 and _crate.details.internal ~= 0 then
                     ctld.displayMessageToGroup(_transUnit, "Loaded  " .. _crate.details.desc .. " crate!", 10,true)
 
                     if _transUnit:getCoalition() == 1 then
@@ -2769,7 +2789,7 @@ function ctld.loadNearbyCrate(_name)
                 end
             end
 
-            ctld.displayMessageToGroup(_transUnit, "No Crates within 50m to load!", 10,true)
+            ctld.displayMessageToGroup(_transUnit, "No internal crates within 50m to load!", 10,true)
 
         else
             -- crate onboard
@@ -4987,16 +5007,16 @@ function ctld.addF10MenuOptions()
 
                             local _crateCommands = missionCommands.addSubMenuForGroup(_groupId, "CTLD Commands", _rootPath)
                             if ctld.hoverPickup == false then
-                                if  ctld.slingLoad == false then
+                                --if  ctld.slingLoad == false then
                                     missionCommands.addCommandForGroup(_groupId, "Load Nearby Crate", _crateCommands, ctld.loadNearbyCrate,  _unitName )
-                                end
+                                --end
                             end
 
                             missionCommands.addCommandForGroup(_groupId, "Unpack Any Crate", _crateCommands, ctld.unpackCrates, { _unitName })
 
-                            if ctld.slingLoad == false then
+                            --if ctld.slingLoad == false then
                                 missionCommands.addCommandForGroup(_groupId, "Drop Crate", _crateCommands, ctld.dropSlingCrate, { _unitName })
-                            end
+                            --end
 
                             missionCommands.addCommandForGroup(_groupId, "List Nearby Crates", _crateCommands, ctld.listNearbyCrates, { _unitName })
 
