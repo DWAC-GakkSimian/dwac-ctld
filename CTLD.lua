@@ -26,8 +26,8 @@ ctld = {} -- DONT REMOVE!
 ctld.Id = "CTLD - "
 
 --- Version.
-ctld.Version = "20220913.01"
-ctld.buzVersion = "Buz101"
+ctld.Version = "20220921.01"
+ctld.buzVersion = "Buz102"
 
 -- debug level, specific to this module
 ctld.Debug = true
@@ -508,11 +508,12 @@ ctld.JTAC_WEIGHT = 15 -- kg
 -- You can also add an optional coalition side to limit the group to one side
 -- for the side - 2 is BLUE and 1 is RED
 ctld.loadableGroups = {
-    {name = "Standard Group 10 ", inf = 4, mg = 2, at = 4 }, -- will make a loadable group with 6 infantry, 2 MGs and 2 anti-tank for both coalitions
+    {name = "Standard Group 10 (UH-1)", inf = 4, mg = 1, at = 1, aa=2 }, -- will make a loadable group with 6 infantry, 2 MGs and 2 anti-tank for both coalitions
+    {name = "Standard Group 20 (MI-8)", inf = 8, mg = 2, at = 2, aa=4 },
     {name = "Anti Air", inf = 4, aa = 4  },
     {name = "Anti Tank", inf = 4, at = 6  },
-    {name = "JTAC Group", inf = 4, jtac = 1, at = 5 }, -- will make a loadable group with 4 infantry and a JTAC soldier for both coalitions
-    {name = "Single JTAC", jtac = 1 }, -- will make a loadable group witha single JTAC soldier for both coalitions
+    {name = "JTAC Group (10)", inf = 4, jtac = 1, at = 5 }, -- will make a loadable group with 4 infantry and a JTAC soldier for both coalitions
+    {name = "2-man JTAC", jtac = 2 }, -- will make a loadable group witha single JTAC soldier for both coalitions
     -- {name = "Mortar Squad Red", inf = 2, mortar = 5, side =1 }, --would make a group loadable by RED only
 }
 
@@ -531,15 +532,13 @@ ctld.spawnableCrates = {
         -- side is optional but 2 is BLUE and 1 is RED
         -- dont use that option with the HAWK Crates
 		-- LIMIT to 12 per category and side or you won't see them in F1-12
-        { weight = 700, desc = "HMMWV - TOW(internal)", unit = "M1045 HMMWV TOW", side = 2, internal = 1, cratesRequired = 2 },
-		{ weight = 1335, desc = "HMMWV - TOW", unit = "M1045 HMMWV TOW", internal = 0, side = 2 },
-        { weight = 701, desc = "HMMWV - MG(internal)", unit = "M1043 HMMWV Armament", internal = 1, side = 2 },
-        { weight = 1334, desc = "HMMWV - MG", unit = "M1043 HMMWV Armament", internal = 0, side = 2 },
-        { weight = 1336, desc = "HMMWV - JTAC", unit = "Hummer", internal = 0, side = 2 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
+        { weight = 850, desc = "HMMWV - TOW(internal)", unit = "M1045 HMMWV TOW", side = 2, internal = 1, cratesRequired = 1 },
+        { weight = 751, desc = "HMMWV - MG(internal)", unit = "M1043 HMMWV Armament", internal = 1, side = 2 },
+        { weight = 700, desc = "HMMWV - JTAC (internal)", unit = "Hummer", internal = 1, side = 2, cratesRequired = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
         { weight = 750, desc = "M-818 Ammo Truck(internal)", unit = "M 818", internal = 1, side = 2, cratesRequired = 2 },
         { weight = 1500, desc = "M-818 Ammo Truck", unit = "M 818", internal = 0, side = 2 },
 		
-        { weight = 1300, desc = "SKP-11 - JTAC", unit = "SKP-11", internal = 0, side = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
+        { weight = 1300, desc = "SKP-11 - JTAC", unit = "SKP-11", internal = 0 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
         { weight = 1486, desc = "Ural-375 Ammo Truck", unit = "Ural-375", internal = 0, side = 1 },
         { weight = 2745, desc = "FOB Crate", unit = "FOB-SMALL", internal = 0, cratesRequired = 3 } -- Builds a FOB! - requires 3 * ctld.cratesRequiredForFOB
         --{ weight = 100, desc = "2B11 Mortar", unit = "2B11 mortar" },
@@ -550,40 +549,44 @@ ctld.spawnableCrates = {
 		{ weight = 2339, desc = "M-1 Abrams", unit = "M-1 Abrams", internal = 0, side = 2,  cratesRequired = 5 },
 	    { weight = 2338, desc = "M-2 Bradley", unit = "M-2 Bradley", internal = 0, side = 2, cratesRequired = 3   },
 
-        { weight = 1100, desc = "BTR-D", unit = "BTR_D", internal = 0, side = 2, cratesRequired = 2 },
-        { weight = 1101, desc = "BRDM-2", unit = "BRDM-2", internal = 0, side = 2, cratesRequired = 2 },
+        { weight = 1100, desc = "BTR-D", unit = "BTR_D", internal = 0, side = 1, cratesRequired = 2 },
+        { weight = 1101, desc = "BRDM-2", unit = "BRDM-2", internal = 0, side = 1, cratesRequired = 2 }
 
 	},
     ["AA short range"] = {
         --{ weight = 50, desc = "Stinger", unit = "Soldier stinger", side = 2 },
         --{ weight = 55, desc = "Igla", unit = "SA-18 Igla manpad", side = 1 },
 
-		{ weight = 605, desc = "Strela-1 9P31(internal)", unit = "Strela-1 9P31", internal = 1, side = 1, cratesRequired = 2 },
-        { weight = 1153, desc = "Strela-1 9P31", unit = "Strela-1 9P31", internal = 0, side = 1 },
-        { weight = 604, desc = "M1097 Avenger(internal)", unit = "M1097 Avenger", internal = 1, side = 2, cratesRequired = 2 },
         { weight = 1152, desc = "M1097 Avenger", unit = "M1097 Avenger", internal = 0, side = 2 },
-		{ weight = 2330, desc = "SA-19 Tunguska 2S6", unit = "2S6 Tunguska", internal = 0, side = 1, cratesRequired = 3 },
 		{ weight = 2331, desc = "Roland ADS", unit = "Roland ADS", internal = 0, side = 2, cratesRequired = 3 },
-		
-		{ weight = 405, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", side = 1, cratesRequired = 1 },
+        { weight = 604, desc = "M1097 Avenger(internal)", unit = "M1097 Avenger", internal = 1, side = 2, cratesRequired = 2 },
         { weight = 2415, desc = "Vulcan(internal)", unit = "Vulcan", internal = 1, side = 2, cratesRequired = 4  },
-        { weight = 2415, desc = "Vulcan", unit = "Vulcan", internal = 0, side = 2, cratesRequired = 2  }
+        { weight = 2415, desc = "Vulcan", unit = "Vulcan", internal = 0, side = 2, cratesRequired = 2  },
+		
+        
+		{ weight = 605, desc = "Strela-1 9P31(internal)", unit = "Strela-1 9P31", internal = 1, cratesRequired = 2 },
+        { weight = 1153, desc = "Strela-1 9P31", unit = "Strela-1 9P31", internal = 0 },
+		{ weight = 2330, desc = "SA-19 Tunguska 2S6", unit = "2S6 Tunguska", internal = 0, cratesRequired = 3 },
+		{ weight = 1400, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", internal = 0, cratesRequired = 2 }
 	    
     },
     ["AA mid range"] = {
         -- HAWK System
-        { weight = 540, desc = "HAWK Launcher", unit = "Hawk ln", side = 2},
-        { weight = 545, desc = "HAWK Search Radar", unit = "Hawk sr", side = 2 },
-        { weight = 546, desc = "HAWK Track Radar", unit = "Hawk tr", side = 2 },
-        { weight = 547, desc = "HAWK PCP", unit = "Hawk pcp" , side = 2 }, -- Remove this if on 1.2
-	    { weight = 548, desc = "HAWK CWAR", unit = "Hawk cwar" , side = 2 }, -- Remove this if on 2.5	
-        { weight = 549, desc = "HAWK Repair", unit = "HAWK Repair" , side = 2 },
+        -- { weight = 540, desc = "HAWK Launcher", unit = "Hawk ln", side = 2},
+        -- { weight = 545, desc = "HAWK Search Radar", unit = "Hawk sr", side = 2 },
+        -- { weight = 546, desc = "HAWK Track Radar", unit = "Hawk tr", side = 2 },
+        -- { weight = 547, desc = "HAWK PCP", unit = "Hawk pcp" , side = 2 }, -- Remove this if on 1.2
+	    -- { weight = 548, desc = "HAWK CWAR", unit = "Hawk cwar" , side = 2 }, -- Remove this if on 2.5	
+        -- { weight = 549, desc = "HAWK Repair", unit = "HAWK Repair" , side = 2 },
         -- End of HAWK
 
         -- KUB SYSTEM
-        { weight = 560, desc = "KUB Launcher", unit = "Kub 2P25 ln", side = 1},
-        { weight = 565, desc = "KUB Radar", unit = "Kub 1S91 str", side = 1 },
-        { weight = 570, desc = "KUB Repair", unit = "KUB Repair", side = 1},
+        { weight = 1166, desc = "KUB Launcher", unit = "Kub 2P25 ln (internal)", internal = 1, cratesRequired = 2 },
+        { weight = 756, desc = "KUB Radar", unit = "Kub 1S91 str (internal)", internal = 1, cratesRequired = 2 },
+        { weight = 570, desc = "KUB Repair", unit = "KUB Repair (internal)", internal = 1, cratesRequired = 2 },
+        { weight = 2332, desc = "KUB Launcher", unit = "Kub 2P25 ln", internal = 0, cratesRequired = 1 },
+        { weight = 1502, desc = "KUB Radar", unit = "Kub 1S91 str", internal = 0, cratesRequired = 1 },
+        { weight = 1107, desc = "KUB Repair", unit = "KUB Repair", internal = 0, cratesRequired = 1 }
         -- End of KUB
 
         -- BUK System
@@ -593,19 +596,19 @@ ctld.spawnableCrates = {
         --        { weight = 590, desc = "BUK Repair", unit = "BUK Repair"},
         -- END of BUK
     },
-    ["AA long range"] = {
-        -- Patriot System
-        { weight = 555, desc = "Patriot Launcher", unit = "Patriot ln", side = 2 },
-        { weight = 556, desc = "Patriot Radar", unit = "Patriot str" , side = 2 },
-        { weight = 557, desc = "Patriot ECS", unit = "Patriot ECS", side = 2 },
-        { weight = 553, desc = "Patriot ICC", unit = "Patriot cp", side = 2 },
-        { weight = 554, desc = "Patriot EPP", unit = "Patriot EPP", side = 2 },
-        { weight = 558, desc = "Patriot AMG (optional)", unit = "Patriot AMG" , side = 2 },
-        { weight = 559, desc = "Patriot Repair", unit = "Patriot Repair" , side = 2 },
-        -- End of Patriot
+    -- ["AA long range"] = {
+    --     -- Patriot System
+    --     { weight = 555, desc = "Patriot Launcher", unit = "Patriot ln", side = 2 },
+    --     { weight = 556, desc = "Patriot Radar", unit = "Patriot str" , side = 2 },
+    --     { weight = 557, desc = "Patriot ECS", unit = "Patriot ECS", side = 2 },
+    --     { weight = 553, desc = "Patriot ICC", unit = "Patriot cp", side = 2 },
+    --     { weight = 554, desc = "Patriot EPP", unit = "Patriot EPP", side = 2 },
+    --     { weight = 558, desc = "Patriot AMG (optional)", unit = "Patriot AMG" , side = 2 },
+    --     { weight = 559, desc = "Patriot Repair", unit = "Patriot Repair" , side = 2 },
+    --     -- End of Patriot
 
-        { weight = 595, desc = "Early Warning Radar", unit = "1L13 EWR", side = 1 }, -- cant be used by BLUE coalition
-    },
+    --     { weight = 595, desc = "Early Warning Radar", unit = "1L13 EWR", side = 1 }, -- cant be used by BLUE coalition
+    -- },
 }
 
 --- 3D model that will be used to represent a loadable crate ; by default, a generator
@@ -3182,7 +3185,7 @@ function ctld.unpackCrates(_arguments)
 
             elseif _crate ~= nil and _crate.dist < 200 then
 
-                if ctld.forceCrateToBeMoved and ctld.crateMove[_crate.crateUnit:getName()] then
+                if ctld.forceCrateToBeMoved and ctld.crateMove[_crate.crateUnit:getName()] and ctld.hoverPickup then
                     ctld.displayMessageToGroup(_heli,"Sorry you must move this crate before you unpack it!", 20)
                     return
                 end
