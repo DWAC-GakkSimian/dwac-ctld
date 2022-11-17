@@ -104,6 +104,9 @@ ctld.deployedBeaconBattery = 210 -- the battery on deployed beacons will last fo
 
 ctld.enabledRadioBeaconDrop = true -- if its set to false then beacons cannot be dropped by units
 
+ctld.beaconRefreshPeriod      = 65 -- IMPORTANT - Set this time (secs) to a bit longer than your max beacon.ogg or beaconsilent.ogg run duration.
+                                     -- The ADF needle will only point during the audible period, and a shorter period here will overlap and cause issues.
+
 ctld.allowRandomAiTeamPickups = false -- Allows the AI to randomize the loading of infantry teams (specified below) at pickup zones
 
 -- Simulated Sling load configuration
@@ -532,10 +535,10 @@ ctld.spawnableCrates = {
         -- side is optional but 2 is BLUE and 1 is RED
         -- dont use that option with the HAWK Crates
 		-- LIMIT to 12 per category and side or you won't see them in F1-12
-        { weight = 850, desc = "HMMWV - TOW(internal)", unit = "M1045 HMMWV TOW", side = 2, internal = 1, cratesRequired = 1 },
-        { weight = 751, desc = "HMMWV - MG(internal)", unit = "M1043 HMMWV Armament", internal = 1, side = 2 },
+        { weight = 850, desc = "HMMWV - TOW (internal)", unit = "M1045 HMMWV TOW", side = 2, internal = 1, cratesRequired = 1 },
+        { weight = 751, desc = "HMMWV - MG (internal)", unit = "M1043 HMMWV Armament", internal = 1, side = 2 },
         { weight = 700, desc = "HMMWV - JTAC (internal)", unit = "Hummer", internal = 1, side = 2, cratesRequired = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
-        { weight = 750, desc = "M-818 Ammo Truck(internal)", unit = "M 818", internal = 1, side = 2, cratesRequired = 2 },
+        { weight = 750, desc = "M-818 Ammo Truck (internal)", unit = "M 818", internal = 1, side = 2, cratesRequired = 2 },
         { weight = 1500, desc = "M-818 Ammo Truck", unit = "M 818", internal = 0, side = 2 },
 		
         { weight = 1300, desc = "SKP-11 - JTAC", unit = "SKP-11", internal = 0 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
@@ -546,8 +549,8 @@ ctld.spawnableCrates = {
         --{ weight = 255, desc = "M-109", unit = "M-109", side = 2 },
     },
 	["Ground Forces: Heavy"] = {
-		{ weight = 2339, desc = "M-1 Abrams", unit = "M-1 Abrams", internal = 0, side = 2,  cratesRequired = 5 },
-	    { weight = 2338, desc = "M-2 Bradley", unit = "M-2 Bradley", internal = 0, side = 2, cratesRequired = 3   },
+		{ weight = 2339, desc = "M-1 Abrams", unit = "M-1 Abrams", internal = 0, side = 2,  cratesRequired = 3 },
+	    { weight = 2338, desc = "M-2 Bradley", unit = "M-2 Bradley", internal = 0, side = 2, cratesRequired = 2   },
 
         { weight = 1100, desc = "BTR-D", unit = "BTR_D", internal = 0, side = 1, cratesRequired = 2 },
         { weight = 1101, desc = "BRDM-2", unit = "BRDM-2", internal = 0, side = 1, cratesRequired = 2 }
@@ -557,16 +560,16 @@ ctld.spawnableCrates = {
         --{ weight = 50, desc = "Stinger", unit = "Soldier stinger", side = 2 },
         --{ weight = 55, desc = "Igla", unit = "SA-18 Igla manpad", side = 1 },
 
-        { weight = 1152, desc = "M1097 Avenger", unit = "M1097 Avenger", internal = 0, side = 2 },
-		{ weight = 2331, desc = "Roland ADS", unit = "Roland ADS", internal = 0, side = 2, cratesRequired = 3 },
-        { weight = 604, desc = "M1097 Avenger(internal)", unit = "M1097 Avenger", internal = 1, side = 2, cratesRequired = 2 },
-        { weight = 2415, desc = "Vulcan(internal)", unit = "Vulcan", internal = 1, side = 2, cratesRequired = 4  },
+        { weight = 1152, desc = "M1097 Avenger", unit = "M1097 Avenger", internal = 0, side = 1 },
+		{ weight = 2331, desc = "Roland ADS", unit = "Roland ADS", internal = 0, side = 2, cratesRequired = 2 },
+        { weight = 604, desc = "M1097 Avenger (internal)", unit = "M1097 Avenger", internal = 1, side = 2, cratesRequired = 2 },
+        { weight = 2415, desc = "Vulcan (internal)", unit = "Vulcan", internal = 1, side = 2, cratesRequired = 3  },
         { weight = 2415, desc = "Vulcan", unit = "Vulcan", internal = 0, side = 2, cratesRequired = 2  },
 		
         
 		{ weight = 605, desc = "Strela-1 9P31(internal)", unit = "Strela-1 9P31", internal = 1, cratesRequired = 2 },
         { weight = 1153, desc = "Strela-1 9P31", unit = "Strela-1 9P31", internal = 0 },
-		{ weight = 2330, desc = "SA-19 Tunguska 2S6", unit = "2S6 Tunguska", internal = 0, cratesRequired = 3 },
+		{ weight = 2330, desc = "SA-19 Tunguska 2S6", unit = "2S6 Tunguska", internal = 0, cratesRequired = 2 },
 		{ weight = 1400, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", internal = 0, cratesRequired = 2 }
 	    
     },
@@ -581,9 +584,9 @@ ctld.spawnableCrates = {
         -- End of HAWK
 
         -- KUB SYSTEM
-        { weight = 1166, desc = "KUB Launcher", unit = "Kub 2P25 ln (internal)", internal = 1, cratesRequired = 2 },
-        { weight = 756, desc = "KUB Radar", unit = "Kub 1S91 str (internal)", internal = 1, cratesRequired = 2 },
-        { weight = 570, desc = "KUB Repair", unit = "KUB Repair (internal)", internal = 1, cratesRequired = 2 },
+        { weight = 1166, desc = "KUB Launcher (internal)", unit = "Kub 2P25 ln", internal = 1, cratesRequired = 2 },
+        { weight = 756, desc = "KUB Radar (internal)", unit = "Kub 1S91 str", internal = 1, cratesRequired = 2 },
+        { weight = 570, desc = "KUB Repair (internal)", unit = "KUB Repair", internal = 1, cratesRequired = 2 },
         { weight = 2332, desc = "KUB Launcher", unit = "Kub 2P25 ln", internal = 0, cratesRequired = 1 },
         { weight = 1502, desc = "KUB Radar", unit = "Kub 1S91 str", internal = 0, cratesRequired = 1 },
         { weight = 1107, desc = "KUB Repair", unit = "KUB Repair", internal = 0, cratesRequired = 1 }
@@ -2806,7 +2809,7 @@ end
 --recreates beacons to make sure they work!
 function ctld.refreshRadioBeacons()
 
-    timer.scheduleFunction(ctld.refreshRadioBeacons, nil, timer.getTime() + 30)
+    timer.scheduleFunction(ctld.refreshRadioBeacons, nil, timer.getTime() + ctld.beaconRefreshPeriod)
 
 
     for _index, _beaconDetails in ipairs(ctld.deployedRadioBeacons) do
