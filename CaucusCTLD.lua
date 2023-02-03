@@ -27,7 +27,7 @@ ctld.Id = "CTLD - "
 
 --- Version.
 ctld.Version = "20211113.01"
-ctld.DWACVersion = "20230130.01"
+ctld.DWACVersion = "20230203.01"
 
 -- debug level, specific to this module
 ctld.Debug = true
@@ -3539,12 +3539,14 @@ function ctld.spawnCrateGroup(_heli, _positions, _types)
         ["task"] = {},
     }
 
+    local _heliHeading = mist.getHeading(_heli)
+
     if #_positions == 1 then
 
         local _unitId = ctld.getNextUnitId()
         local _details = { type = _types[1], unitId = _unitId, name = string.format("Unpacked %s #%i", _types[1], _unitId) }
 
-        _group.units[1] = ctld.createUnit(_positions[1].x + 5, _positions[1].z + 5, 120, _details)
+        _group.units[1] = ctld.createUnit(_positions[1].x + 5, _positions[1].z + 5, _heliHeading, _details)
 
     else
 
@@ -3553,7 +3555,7 @@ function ctld.spawnCrateGroup(_heli, _positions, _types)
             local _unitId = ctld.getNextUnitId()
             local _details = { type = _types[_i], unitId = _unitId, name = string.format("Unpacked %s #%i", _types[_i], _unitId) }
 
-            _group.units[_i] = ctld.createUnit(_pos.x + 5, _pos.z + 5, 120, _details)
+            _group.units[_i] = ctld.createUnit(_pos.x + 5, _pos.z + 5, _heliHeading, _details)
         end
     end
 
