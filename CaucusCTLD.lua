@@ -656,18 +656,18 @@ ctld.spawnableCrates = {
         { weight = 1020, desc = "HMMWV - JTAC", unit = "Hummer", side = 2, }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
         { weight = 1025, desc = "SKP-11 - JTAC", unit = "SKP-11", side = 1, }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
 
-        { weight = 200, desc = "2B11 Mortar", unit = "2B11 mortar" },
+        { weight = 752, desc = "2B11 Mortar", unit = "2B11 mortar" },
 
-        { weight = 550, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 1, cratesRequired = 3 },
-        { weight = 555, desc = "M-109", unit = "M-109", side = 2, cratesRequired = 3 },
+        { weight = 1034, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 1, cratesRequired = 3 },
+        { weight = 1035, desc = "M-109", unit = "M-109", side = 2, cratesRequired = 3 },
 
-        { weight = 452, desc = "Ural-375 Ammo Truck", unit = "Ural-375", side = 1, cratesRequired = 2 },
-        { weight = 453, desc = "M-818 Ammo Truck", unit = "M 818", side = 2, cratesRequired = 1 },
+        { weight = 1036, desc = "Ural-375 Ammo Truck", unit = "Ural-375", side = 1, cratesRequired = 2 },
+        { weight = 1037, desc = "M-818 Ammo Truck", unit = "M 818", side = 2, cratesRequired = 1 },
 
         { weight = 1600, desc = "FOB Crate - Small", unit = "FOB-SMALL" }, -- Builds a FOB! - requires 3 * ctld.cratesRequiredForFOB
     },
     ["AA short range"] = {
-        { weight = 405, desc = "SAM SA-15 Tor ", unit = "Tor 9A331", side = 2, cratesRequired = 1 },
+        { weight = 1045, desc = "SAM SA-15 Tor ", unit = "Tor 9A331", side = 2, cratesRequired = 1 },
 
         { weight = 805, desc = "Strela-1 9P31", unit = "Strela-1 9P31", side = 1, cratesRequired = 3 },
         { weight = 800, desc = "M1097 Avenger", unit = "M1097 Avenger", side = 2, cratesRequired = 1 },
@@ -697,15 +697,15 @@ ctld.spawnableCrates = {
         { weight = 1059, desc = "Patriot Repair", unit = "Patriot Repair" , side = 2 },
         -- End of Patriot
 
-        { weight = 595, desc = "Early Warning Radar", unit = "1L13 EWR", side = 1 }, -- cant be used by BLUE coalition
+        { weight = 1061, desc = "Early Warning Radar", unit = "1L13 EWR", side = 1 }, -- cant be used by BLUE coalition
     },
 }
 
 --- 3D model that will be used to represent a loadable crate ; by default, a generator
 ctld.spawnableCratesModel_load = {
     ["category"] = "Fortifications",
-    ["shape_name"] = "GeneratorF",
-    ["type"] = "GeneratorF"
+    ["shape_name"] = "bw_container_cargo",
+    ["type"] = "bw_container_cargo"
 }
 
 --- 3D model that will be used to represent a slingable crate ; by default, a crate
