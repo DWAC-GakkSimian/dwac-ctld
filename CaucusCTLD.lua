@@ -27,7 +27,7 @@ ctld.Id = "CTLD - "
 
 --- Version.
 ctld.Version = "20211113.01"
-ctld.DWACVersion = "20230317.01"
+ctld.DWACVersion = "20230203.01"
 
 -- debug level, specific to this module
 ctld.Debug = true
@@ -188,9 +188,9 @@ ctld.pickupZones = {
     { "Mozdok", "blue", -1, "yes", 2 },
 
 
-    { "Harry S Truman", "blue", 10, "yes", 2 },
-    { "John C Stennis", "blue", 10, "yes", 2 },
-    { "Tarawa", "blue", 10, "yes", 2 },
+    { "Harry S Truman", "blue", -1, "yes", 2 },
+    { "John C Stennis", "blue", -1, "yes", 2 },
+    { "Tarawa", "blue", -1, "yes", 2 },
 }
 
 
@@ -448,6 +448,18 @@ ctld.transportPilotNames = {
     "3a. Sochi-Adler ↔ UH-60L-COLD START-2",
     "3a. Sochi-Adler ↔ UH-60L-COLD START-3",
     "3a. Sochi-Adler ↔ UH-60L-COLD START-4",
+	"2b. Gudauta ↔ UH-60L-1",
+	"2b. Gudauta ↔ UH-60L-2",
+	"2b. Gudauta ↔ UH-60L-3",
+	"2b. Gudauta ↔ UH-60L-4",
+	"1a. Sukhumi ↔ UH-60L-1",
+	"1a. Sukhumi ↔ UH-60L-2",
+	"1a. Sukhumi ↔ UH-60L-3",
+	"1a. Sukhumi ↔ UH-60L-4",
+	"1c. Nalchik ↔ UH-60L-1",
+	"1c. Nalchik ↔ UH-60L-2",
+	"1c. Nalchik ↔ UH-60L-3",
+	"1c. Nalchik ↔ UH-60L-1",
     "4b. Maykop ↔ UH-60L -1",
     "4b. Maykop ↔ UH-60L -2",
     "4b. Maykop ↔ UH-60L -3",
@@ -497,7 +509,21 @@ ctld.transportPilotNames = {
 	"1a. LHA-1 Tarawa ↔ AV-8B COLDSTART-3",
     "1a. Sukhumi ↔ MI8-1",
     "1a. Sukhumi ↔ MI8-2",
-    "1a. Sukhumi ↔ MI8-3-1"
+    "1a. Sukhumi ↔ MI8-3-1",
+	"1c. Nalchik ↔ Chinook",
+	"1c. Nalchik ↔ Chinook-1",
+	"2b. Gudauta ↔ Chinook",
+	"2b. Gudauta ↔ Chinook-1",
+	"3a. Sochi-Adler ↔ Chinook",
+	"3a. Sochi-Adler ↔ Chinook-1",
+	"4b. Maykop ↔ Chinook",
+	"4b. Maykop ↔ Chinook-1",
+	"4c. Krasnodar-Center ↔ Chinook",
+	"4c. Krasnodar-Center ↔ Chinook-1",
+	"6a. Krymsk ↔ Chinook",
+	"6a. Krymsk ↔ Chinook-1",
+	"6a. Gelendzhik ↔ Chinook",
+	"6a. Gelendzhik ↔ Chinook-1",
 }
 
 -- ************** Logistics UNITS FOR CRATE SPAWNING ******************
@@ -523,7 +549,9 @@ ctld.logisticUnits = {
     "Harry S Truman",
     "LHA-1 Tarawa",
     "John C Stennis",
-
+	"John C Stennis-1",
+	"John C Stennis-2",
+	"John C Stennis-3",
 }
 
 -- ************** UNITS ABLE TO TRANSPORT VEHICLES ******************
@@ -651,9 +679,9 @@ ctld.spawnableCrates = {
         -- side is optional but 2 is BLUE and 1 is RED
         -- dont use that option with the HAWK Crates
         { weight = 1000, desc = "HMMWV - TOW", unit = "M1045 HMMWV TOW", side = 2 },
-        { weight = 1001, desc = "HMMWV - TOW (internal)", unit = "M1045 HMMWV TOW", side = 2, internal = 1, cratesRequired = 1 },
+        { weight = 501, desc = "HMMWV - TOW (internal)", unit = "M1045 HMMWV TOW", side = 2, internal = 1, cratesRequired = 1 },
         { weight = 1005, desc = "HMMWV - MG", unit = "M1043 HMMWV Armament", side = 2 },
-        { weight = 1002, desc = "HMMWV - MG (internal)", unit = "M1043 HMMWV Armament", side = 2, internal = 1, cratesRequired = 1 },
+        { weight = 500, desc = "HMMWV - MG (internal)", unit = "M1043 HMMWV Armament", side = 2, internal = 1, cratesRequired = 1 },
 
         { weight = 1010, desc = "BTR-D", unit = "BTR_D", side = 1 },
         { weight = 1015, desc = "BRDM-2", unit = "BRDM-2", side = 1 },
