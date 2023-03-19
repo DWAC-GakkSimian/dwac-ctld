@@ -714,11 +714,8 @@ ctld.spawnableCrates = {
     ["AA mid range"] = {
         -- KUB SYSTEM
         { weight = 1060, desc = "KUB Launcher", unit = "Kub 2P25 ln", side = 2 },
-        { weight = 530, desc = "KUB Launcher (internal)", unit = "Kub 2P25 ln", side = 2, internal = 1, cratesRequired = 2 },
         { weight = 1065, desc = "KUB Radar", unit = "Kub 1S91 str", side = 2 },
-        { weight = 531, desc = "KUB Radar (internal)", unit = "Kub 1S91 str", side = 2, internal = 1, cratesRequired = 2 },
         { weight = 1070, desc = "KUB Repair", unit = "KUB Repair", side = 2 },
-        { weight = 532, desc = "KUB Repair (internal)", unit = "KUB Repair", side = 2, internal = 1, cratesRequired = 2 },
         -- End of KUB
 
         -- BUK System
@@ -728,8 +725,7 @@ ctld.spawnableCrates = {
         { weight = 541, desc = "BUK Search Radar (internal)", unit = "SA-11 Buk SR 9S18M1", internal = 1, cratesRequired = 2 },
         { weight = 1085, desc = "BUK CC Radar", unit = "SA-11 Buk CC 9S470M1" },
         { weight = 542, desc = "BUK CC Radar (internal)", unit = "SA-11 Buk CC 9S470M1", internal = 1, cratesRequired = 2 },
-        { weight = 1090, desc = "BUK Repair", unit = "BUK Repair" },
-        { weight = 543, desc = "BUK Repair (internal)", unit = "BUK Repair", internal = 1, cratesRequired = 2 },
+        { weight = 1090, desc = "BUK Repair", unit = "BUK Repair" }
         -- END of BUK
     },
     ["AA long range"] = {
@@ -741,13 +737,9 @@ ctld.spawnableCrates = {
         { weight = 1057, desc = "Patriot ECS", unit = "Patriot ECS", side = 2 },
         { weight = 552, desc = "Patriot ECS (internal)", unit = "Patriot ECS", side = 2, internal = 1, cratesRequired = 2 },
         { weight = 1053, desc = "Patriot ICC", unit = "Patriot cp", side = 2 },
-        { weight = 553, desc = "Patriot ICC (internal)", unit = "Patriot cp", side = 2, internal = 1, cratesRequired = 2 },
         { weight = 1054, desc = "Patriot EPP", unit = "Patriot EPP", side = 2 },
-        { weight = 554, desc = "Patriot EPP (internal)", unit = "Patriot EPP", side = 2, internal = 1, cratesRequired = 2 },
         { weight = 1058, desc = "Patriot AMG (optional)", unit = "Patriot AMG" , side = 2 },
-        { weight = 555, desc = "Patriot AMG (opt-int)", unit = "Patriot AMG" , side = 2, internal = 1, cratesRequired = 2 },
-        { weight = 1059, desc = "Patriot Repair", unit = "Patriot Repair" , side = 2 },
-        { weight = 556, desc = "Patriot Repair (internal)", unit = "Patriot Repair" , side = 2, internal = 1, cratesRequired = 2 },
+        { weight = 1059, desc = "Patriot Repair", unit = "Patriot Repair" , side = 2 }
         -- End of Patriot
 
         { weight = 1061, desc = "Early Warning Radar", unit = "1L13 EWR", side = 1 }, -- cant be used by BLUE coalition
@@ -757,8 +749,8 @@ ctld.spawnableCrates = {
 --- 3D model that will be used to represent a loadable crate ; by default, a generator
 ctld.spawnableCratesModel_load = {
     ["category"] = "Cargos",
-    ["shape_name"] = "ab-212_cargo",
-    ["type"] = "uh1h_cargo"
+    ["shape_name"] = "bw_container_cargo",
+    ["type"] = "container_cargo"
 }
 
 --- 3D model that will be used to represent a slingable crate ; by default, a crate
