@@ -2813,6 +2813,19 @@ function ctld.loadNearbyCrate(_name)
 
 end
 
+function ctld.GetAngleOffset( heading, outAngle )
+    BASE:I("Heading: " .. heading .. "Door Angle: " .. outAngle)
+    local _grossBearing = heading + outAngle
+    local _heading = 0
+    if  _grossBearing > 359 then
+        _heading = _grossBearing - 360
+    else
+        _heading = _grossBearing
+    end
+
+    return _heading
+end
+
 function ctld.Vec2Translate(a, distance, angle)
     -- stolen from Moose
     BASE:I( a )
@@ -2827,40 +2840,43 @@ function ctld.Vec2Translate(a, distance, angle)
 
 function ctld.GetOpenCargoDoorDirection( unit )
     local type_name = unit:getTypeName()
+    local _headingRadians = mist.getHeading( unit )
+    local _unitHeading = mist.utils.toDegree(_headingRadians)
 
     if not ctld.requireOpenDoors then
-        return { 0, 12 }
+
+        return { ctld.GetAngleOffset( _unitHeading, 0 ), 12 }
     end
 
     if type_name == "Mi-8MT" and (unit:getDrawArgumentValue(86) == 1 or unit:getDrawArgumentValue(250) == 1) then
         -- Helo doors open or removed
-        return { 180, 6 }
+        return { ctld.GetAngleOffset( _unitHeading, 180 ), 6 }
     end
 
     if type_name == "Mi-24P" then
         if unit:getDrawArgumentValue(38) == 1 then
-            return  { 270, 9 } 
+            return  { ctld.GetAngleOffset( _unitHeading, 270 ), 9 } 
         end
         if unit:getDrawArgumentValue(86) == 1 then
-            return { 90, 3 }
+            return { ctld.GetAngleOffset( _unitHeading, 90 ), 3 }
         end
     end
 
     if type_name == "UH-1H" then
         if unit:getDrawArgumentValue(43) == 1 then
-            return { 270, 9 }
+            return { ctld.GetAngleOffset( _unitHeading, 270 ), 9 }
         end
         if unit:getDrawArgumentValue(44) == 1 then
-            return { 90, 3 }
+            return { ctld.GetAngleOffset( _unitHeading, 90 ), 3 }
         end
     end
     
     if string.find(type_name, "UH-60L") then
         if unit:getDrawArgumentValue(401) == 1 then
-            return { 270, 9 }
+            return { ctld.GetAngleOffset( _unitHeading, 270 ), 9 }
         end
         if unit:getDrawArgumentValue(402) == 1 then
-            return { 90, 3 }
+            return { ctld.GetAngleOffset( _unitHeading, 90 ), 3 }
         end
     end
 
