@@ -26,7 +26,7 @@ ctld = {} -- DONT REMOVE!
 ctld.Id = "CTLD - "
 
 --- Version.
-ctld.Version = "20220921.01"
+ctld.Version = "20230320.01"
 ctld.buzVersion = "Buz102"
 
 -- debug level, specific to this module
@@ -115,6 +115,9 @@ ctld.minimumHoverHeight = 7.5 -- Lowest allowable height for crate hover
 ctld.maximumHoverHeight = 12.0 -- Highest allowable height for crate hover
 ctld.maxDistanceFromCrate = 5.5 -- Maximum distance from from crate for hover
 ctld.hoverTime = 5 -- Time to hold hover above a crate for loading in seconds
+
+-- DWAC Additions
+ctld.requireOpenDoors = true -- prevent F10 cargo internal loading unless the doors are open
 
 -- end of Simulated Sling load configuration
 
@@ -468,14 +471,18 @@ ctld.unitLoadLimits = {
 ctld.unitActions = {
 
     -- Remove the -- below to turn on options
-    -- ["SA342Mistral"] = {crates=true, troops=true},
-    -- ["SA342L"] = {crates=false, troops=true},
-    -- ["SA342M"] = {crates=false, troops=true},
-	["SA342Mistral"] = {crates=false, troops=true, internal=false},
-	["SA342L"] = {crates=false, troops=true, internal=false},
-	["SA342M"] = {crates=false, troops=true, internal=false},
-	["Ka-50"] = {crates=true, troops=false, internal=false},
-	["Mi-24P"] = {crates=true, troops=true, internal=true}
+    ["SA342Mistral"] = { crates=false, troops=true, internal=false },
+    ["SA342L"] = { crates=false, troops=true, internal=false },
+    ["SA342M"] = { crates=false, troops=true, internal=false },
+    ["UH-1H"] = { crates=true, troops=true, internal=true, loadAngles={ 9,3 } },
+    ["AH-64D_BLK_II"] = { crates=false , troops=true, internal=false },
+    ["Mi-8MT"] = { crates=true , troops=true, internal=true, loadAngles={ 6 } },
+    ["Mi-24P"] = { crates=true , troops=true, internal=true, loadAngles={ 9,3 } },
+    ["Ka-50"] = { crates=true , troops=false, internal=false },
+    --["Ka-50_3"] = { crates=true , troops=false, internal=false },
+    --["UH-60L"] = { crates=true , troops=true, internal=true, loadAngles={ 9,3 } },
+	--["AV8BNA"] = { crates=true , troops=false, internal=false },
+    --["Hercules"] = { crates=true , troops=false, internal=true }
 }
 
 -- ************** WEIGHT CALCULATIONS FOR INFANTRY GROUPS ******************
@@ -605,8 +612,8 @@ ctld.spawnableCrates = {
 --- 3D model that will be used to represent a loadable crate ; by default, a generator
 ctld.spawnableCratesModel_load = {
     ["category"] = "Fortifications",
-    ["shape_name"] = "bw_container_cargo",
-    ["type"] = "container_cargo"
+    ["shape_name"] = "ab-212_cargo",
+    ["type"] = "uh1h_cargo"
 }
 
 --- 3D model that will be used to represent a slingable crate ; by default, a crate
@@ -2757,33 +2764,45 @@ function ctld.loadNearbyCrate(_name)
             return
         end
 
+        -- if ctld.requireOpenDoors and not ctld.IsLoadingDoorOpen(_name) then
+        --     ctld.displayMessageToGroup(_transUnit, "You must open cargo doors before you can load a crate!", 10,true)
+        --     return
+        -- end
+
         if ctld.inTransitSlingLoadCrates[_name] == nil then
             local _crates = ctld.getCratesAndDistance(_transUnit)
+            local _inRangeButCannotLoad = false
 
             for _, _crate in pairs(_crates) do
-
                 if _crate.dist < 50.0 and _crate.details.internal ~= 0 then
-                    ctld.displayMessageToGroup(_transUnit, "Loaded  " .. _crate.details.desc .. " crate!", 10,true)
+                    if ctld.CanLoadCrate( _transUnit, _crate ) then
+                        ctld.displayMessageToGroup(_transUnit, "Loaded  " .. _crate.details.desc .. " crate!", 10,true)
 
-                    if _transUnit:getCoalition() == 1 then
-                        ctld.spawnedCratesRED[_crate.crateUnit:getName()] = nil
+                        if _transUnit:getCoalition() == 1 then
+                            ctld.spawnedCratesRED[_crate.crateUnit:getName()] = nil
+                        else
+                            ctld.spawnedCratesBLUE[_crate.crateUnit:getName()] = nil
+                        end
+
+                        ctld.crateMove[_crate.crateUnit:getName()] = nil
+
+                        _crate.crateUnit:destroy()
+
+                        local _copiedCrate = mist.utils.deepCopy(_crate.details)
+                        _copiedCrate.simulatedSlingload = true
+                        ctld.inTransitSlingLoadCrates[_name] = _copiedCrate
+                        ctld.adaptWeightToCargo(_name)
+                        return
                     else
-                        ctld.spawnedCratesBLUE[_crate.crateUnit:getName()] = nil
+                        _inRangeButCannotLoad = true
                     end
-
-                    ctld.crateMove[_crate.crateUnit:getName()] = nil
-
-                    _crate.crateUnit:destroy()
-
-                    local _copiedCrate = mist.utils.deepCopy(_crate.details)
-                    _copiedCrate.simulatedSlingload = true
-                    ctld.inTransitSlingLoadCrates[_name] = _copiedCrate
-                    ctld.adaptWeightToCargo(_name)
-                    return
                 end
             end
-
-            ctld.displayMessageToGroup(_transUnit, "No internal crates within 50m to load!", 10,true)
+            if _inRangeButCannotLoad then
+                ctld.displayMessageToGroup(_transUnit, "Internal crate(s) found but not in-line with open cargo door!", 10,true)
+            else
+                ctld.displayMessageToGroup(_transUnit, "No internal crates within 50m to load!", 10,true)
+            end
 
         else
             -- crate onboard
@@ -2793,6 +2812,118 @@ function ctld.loadNearbyCrate(_name)
 
 
 end
+
+function ctld.Vec2Translate(a, distance, angle)
+    -- stolen from Moose
+    BASE:I( a )
+    local SX = a.x
+    local SY = a.z
+    local Radians=math.rad(angle or 0)
+    local TX=distance*math.cos(Radians)+SX
+    local TY=distance*math.sin(Radians)+SY
+  
+    return {x=TX, z=TY, y=a.y}
+  end
+
+function ctld.GetOpenCargoDoorDirection( unit )
+    local type_name = unit:getTypeName()
+
+    if not ctld.requireOpenDoors then
+        return { 0, 12 }
+    end
+
+    if type_name == "Mi-8MT" and (unit:getDrawArgumentValue(86) == 1 or unit:getDrawArgumentValue(250) == 1) then
+        -- Helo doors open or removed
+        return { 180, 6 }
+    end
+
+    if type_name == "Mi-24P" then
+        if unit:getDrawArgumentValue(38) == 1 then
+            return  { 270, 9 } 
+        end
+        if unit:getDrawArgumentValue(86) == 1 then
+            return { 90, 3 }
+        end
+    end
+
+    if type_name == "UH-1H" then
+        if unit:getDrawArgumentValue(43) == 1 then
+            return { 270, 9 }
+        end
+        if unit:getDrawArgumentValue(44) == 1 then
+            return { 90, 3 }
+        end
+    end
+    
+    if string.find(type_name, "UH-60L") then
+        if unit:getDrawArgumentValue(401) == 1 then
+            return { 270, 9 }
+        end
+        if unit:getDrawArgumentValue(402) == 1 then
+            return { 90, 3 }
+        end
+    end
+
+    return nil
+end
+
+function ctld.IsViableLoadWindow( crateClockDirection, doorClockDirection )
+    if (doorClockDirection == 12) or (doorClockDirection == 3) or (doorClockDirection == 6) or (doorClockDirection == 9) then
+        local minClock = doorClockDirection - 1
+        local maxClock = doorClockDirection + 1
+
+        return crateClockDirection >= minClock and crateClockDirection <= maxClock
+    end
+
+    return false
+end
+
+function ctld.CanLoadCrate( unit, crate )
+    if unit ~= nil then
+        if not ctld.requireOpenDoors then
+            return true
+        end
+        
+        local _crateDir = ctld.getClockDirection( unit, crate.crateUnit )
+
+        local type_name = unit:getTypeName()
+        if type_name == "Mi-8MT" and (unit:getDrawArgumentValue(86) == 1 or unit:getDrawArgumentValue(250) == 1) then
+            -- Helo doors open or removed
+            return ctld.IsViableLoadWindow( _crateDir, 6 )
+        end
+  
+        if type_name == "Mi-24P" then
+            if unit:getDrawArgumentValue(38) == 1 then
+                return  ctld.IsViableLoadWindow( _crateDir, 9 ) 
+            end
+            if unit:getDrawArgumentValue(86) == 1 then
+                return ctld.IsViableLoadWindow( _crateDir, 3 )
+            end
+        end
+  
+        if type_name == "UH-1H" then
+            if unit:getDrawArgumentValue(43) == 1 then
+                return ctld.IsViableLoadWindow( _crateDir, 9 ) 
+            end
+            if unit:getDrawArgumentValue(44) == 1 then
+                return ctld.IsViableLoadWindow( _crateDir, 3 )
+            end
+        end
+        
+        if string.find(type_name, "UH-60L") then
+            if unit:getDrawArgumentValue(401) == 1 then
+                return ctld.IsViableLoadWindow( _crateDir, 9 ) 
+            end
+            if unit:getDrawArgumentValue(402) == 1 then
+                return ctld.IsViableLoadWindow( _crateDir, 3 )
+            end
+        end
+        
+        return false  
+    end -- nil
+  
+    return false
+  end
 
 --recreates beacons to make sure they work!
 function ctld.refreshRadioBeacons()
@@ -3394,8 +3525,11 @@ function ctld.dropSlingCrate(_args)
         local _heightDiff = ctld.heightDiff(_heli)
 
         if ctld.inAir(_heli) == false or _heightDiff <= 7.5 then
-            ctld.displayMessageToGroup(_heli, _currentCrate.desc .. " crate has been safely unhooked and is at your 12 o'clock", 10)
-            _point = ctld.getPointAt12Oclock(_heli, 30)
+            --ctld.displayMessageToGroup(_heli, _currentCrate.desc .. " crate has been safely unhooked and is at your 12 o'clock", 10)
+            local _outDir = ctld.GetOpenCargoDoorDirection( _heli )
+            _point = ctld.Vec2Translate( _heli:getPoint(), 20, _outDir[1] )
+            ctld.displayMessageToGroup(_heli, _currentCrate.desc .. " crate has been safely unhooked and is at your " .. _outDir[2] .. " o'clock", 10)
+            --_point = ctld.getPointAt12Oclock(_heli, 30)
             --        elseif _heightDiff > 40.0 then
             --            ctld.inTransitSlingLoadCrates[_heli:getName()] = nil
             --            ctld.displayMessageToGroup(_heli, "You were too high! The crate has been destroyed", 10)

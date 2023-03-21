@@ -113,6 +113,10 @@ ctld.maximumHoverHeight = 12.0 -- Highest allowable height for crate hover
 ctld.maxDistanceFromCrate = 5.5 -- Maximum distance from from crate for hover
 ctld.hoverTime = 5 -- Time to hold hover above a crate for loading in seconds
 
+-- DWAC Additions
+ctld.internalLoadSpreadAngle = 45 -- internal cargo must be within max distance and within this angle of it's cargo doors
+ctld.requireOpenDoors = false -- prevent F10 cargo internal loading unless the doors are open
+
 -- end of Simulated Sling load configuration
 
 -- AA SYSTEM CONFIG --
@@ -610,13 +614,13 @@ ctld.unitActions = {
     ["SA342Mistral"] = { crates=false, troops=true, internal=false },
     ["SA342L"] = { crates=false, troops=true, internal=false },
     ["SA342M"] = { crates=false, troops=true, internal=false },
-    ["UH-1H"] = { crates=true, troops=true },
+    ["UH-1H"] = { crates=true, troops=true, internal=true, loadAngles={ 9,3 } },
     ["AH-64D_BLK_II"] = { crates=false , troops=true, internal=false },
-    ["Mi-8MT"] = { crates=true , troops=true, internal=true },
-    ["Mi-24P"] = { crates=true , troops=true, internal=true },
+    ["Mi-8MT"] = { crates=true , troops=true, internal=true, loadAngles={ 6 } },
+    ["Mi-24P"] = { crates=true , troops=true, internal=true, loadAngles={ 9,3 } },
     ["Ka-50"] = { crates=true , troops=false, internal=false },
     ["Ka-50_3"] = { crates=true , troops=false, internal=false },
-    ["UH-60L"] = { crates=true , troops=true, internal=true },
+    ["UH-60L"] = { crates=true , troops=true, internal=true, loadAngles={ 9,3 } },
 	["AV8BNA"] = { crates=true , troops=false, internal=false },
     ["Hercules"] = { crates=true , troops=false, internal=true }
 
@@ -720,7 +724,7 @@ ctld.spawnableCrates = {
 
         -- BUK System
         { weight = 1075, desc = "BUK Launcher", unit = "SA-11 Buk LN 9A310M1" },
-        { weight = 540, desc = "BUK Launcher", unit = "SA-11 Buk LN 9A310M1", internal = 1, cratesRequired = 2 },
+        { weight = 540, desc = "BUK Launcher (internal)", unit = "SA-11 Buk LN 9A310M1", internal = 1, cratesRequired = 2 },
         { weight = 1080, desc = "BUK Search Radar", unit = "SA-11 Buk SR 9S18M1" },
         { weight = 541, desc = "BUK Search Radar (internal)", unit = "SA-11 Buk SR 9S18M1", internal = 1, cratesRequired = 2 },
         { weight = 1085, desc = "BUK CC Radar", unit = "SA-11 Buk CC 9S470M1" },
@@ -739,10 +743,10 @@ ctld.spawnableCrates = {
         { weight = 1053, desc = "Patriot ICC", unit = "Patriot cp", side = 2 },
         { weight = 1054, desc = "Patriot EPP", unit = "Patriot EPP", side = 2 },
         { weight = 1058, desc = "Patriot AMG (optional)", unit = "Patriot AMG" , side = 2 },
-        { weight = 1059, desc = "Patriot Repair", unit = "Patriot Repair" , side = 2 }
+        { weight = 1059, desc = "Patriot Repair", unit = "Patriot Repair" , side = 2 },
         -- End of Patriot
 
-        { weight = 1061, desc = "Early Warning Radar", unit = "1L13 EWR", side = 1 }, -- cant be used by BLUE coalition
+        --{ weight = 1061, desc = "Early Warning Radar", unit = "1L13 EWR", side = 1 }, -- cant be used by BLUE coalition
     },
 }
 
