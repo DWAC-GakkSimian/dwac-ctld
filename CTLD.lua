@@ -26,7 +26,7 @@ ctld = {} -- DONT REMOVE!
 ctld.Id = "CTLD - "
 
 --- Version.
-ctld.Version = "20230320.01"
+ctld.Version = "20230323.01"
 ctld.buzVersion = "Buz102"
 
 -- debug level, specific to this module
@@ -611,7 +611,7 @@ ctld.spawnableCrates = {
 
 --- 3D model that will be used to represent a loadable crate ; by default, a generator
 ctld.spawnableCratesModel_load = {
-    ["category"] = "Fortifications",
+    ["category"] = "Cargos",
     ["shape_name"] = "ab-212_cargo",
     ["type"] = "uh1h_cargo"
 }
@@ -1599,7 +1599,7 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight,_side)
     else
 
         if ctld.slingLoad then
-			if _crateType["internal"] == 0 then
+			if _crateType["internal"] ~= 1 then
 				_crate = mist.utils.deepCopy(ctld.spawnableCratesModel_sling)
 				_crate["canCargo"] = true
 			else
@@ -2764,11 +2764,6 @@ function ctld.loadNearbyCrate(_name)
             return
         end
 
-        -- if ctld.requireOpenDoors and not ctld.IsLoadingDoorOpen(_name) then
-        --     ctld.displayMessageToGroup(_transUnit, "You must open cargo doors before you can load a crate!", 10,true)
-        --     return
-        -- end
-
         if ctld.inTransitSlingLoadCrates[_name] == nil then
             local _crates = ctld.getCratesAndDistance(_transUnit)
             local _inRangeButCannotLoad = false
@@ -2809,8 +2804,6 @@ function ctld.loadNearbyCrate(_name)
             ctld.displayMessageToGroup(_transUnit, "You already have a "..ctld.inTransitSlingLoadCrates[_name].desc.." crate onboard!", 10,true)
         end
     end
-
-
 end
 
 function ctld.GetAngleOffset( heading, outAngle )
@@ -3541,15 +3534,14 @@ function ctld.dropSlingCrate(_args)
         local _heightDiff = ctld.heightDiff(_heli)
 
         if ctld.inAir(_heli) == false or _heightDiff <= 7.5 then
-            --ctld.displayMessageToGroup(_heli, _currentCrate.desc .. " crate has been safely unhooked and is at your 12 o'clock", 10)
             local _outDir = ctld.GetOpenCargoDoorDirection( _heli )
-            _point = ctld.Vec2Translate( _heli:getPoint(), 20, _outDir[1] )
-            ctld.displayMessageToGroup(_heli, _currentCrate.desc .. " crate has been safely unhooked and is at your " .. _outDir[2] .. " o'clock", 10)
-            --_point = ctld.getPointAt12Oclock(_heli, 30)
-            --        elseif _heightDiff > 40.0 then
-            --            ctld.inTransitSlingLoadCrates[_heli:getName()] = nil
-            --            ctld.displayMessageToGroup(_heli, "You were too high! The crate has been destroyed", 10)
-            --            return
+            if _outDir == nil then
+                ctld.displayMessageToGroup( _heli, "Cargo doors are closed", 10 )
+                return
+            else
+                _point = ctld.Vec2Translate( _heli:getPoint(), 20, _outDir[1] )
+                ctld.displayMessageToGroup( _heli, _currentCrate.desc .. " crate has been safely unhooked and is at your " .. _outDir[2] .. " o'clock", 10 )
+            end            
         elseif _heightDiff > 7.5 and _heightDiff <= 40.0 then
             ctld.displayMessageToGroup(_heli, _currentCrate.desc .. " crate has been safely dropped below you", 10)
         else -- _heightDiff > 40.0
