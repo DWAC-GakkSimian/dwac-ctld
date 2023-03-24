@@ -2264,7 +2264,7 @@ function ctld.GetOpenCargoDoorDirection( unit )
         end
     end
     
-    if string.find(type_name, "UH-60L") then
+    if type_name == "UH-60L" then
         if unit:getDrawArgumentValue(401) == 1 then
             return { ctld.GetAngleOffset( _unitHeading, 270 ), 9 }
         end
@@ -2319,7 +2319,7 @@ function ctld.CanLoadCrate( unit, crate )
             end
         end
         
-        if string.find(type_name, "UH-60L") then
+        if type_name == "UH-60L" then
             if unit:getDrawArgumentValue(401) == 1 then
                 return ctld.IsViableLoadWindow( _crateDir, 9 ) 
             end
