@@ -27,7 +27,7 @@ ctld.Id = "CTLD - "
 
 --- Version.
 ctld.Version = "20211113.01"
-ctld.DWACVersion = "20230323.01"
+ctld.DWACVersion = "20230327.01"
 
 -- debug level, specific to this module
 ctld.Debug = true
@@ -2169,7 +2169,7 @@ function ctld.loadNearbyCrate(_name)
 
             for _, _crate in pairs(_crates) do
 
-                if _crate.dist < 50.0 and _crate.details.internal ~= 0 then
+                if _crate.dist < 50.0 and _crate.details.internal == 1 then
                     if ctld.CanLoadCrate( _transUnit, _crate ) then
                         ctld.displayMessageToGroup(_transUnit, "Loaded  " .. _crate.details.desc .. " crate!", 10,true)
 
@@ -3482,7 +3482,7 @@ function ctld.unpackAASystem(_heli, _nearestCrate, _nearbyCrates,_aaSystemTempla
 
                     local _point = _systemPart.crate.crateUnit:getPoint()
 
-                    _point = { x = _point.x + _xOffset, y = _point.y, z = _point.z + _yOffset }
+                    _point = { x = _point.x + (3 * _xOffset), y = _point.y, z = _point.z + (3 * _yOffset) }
 
                     table.insert(_posArray, _point)
                     table.insert(_typeArray, _name)
