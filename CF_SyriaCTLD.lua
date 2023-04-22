@@ -185,7 +185,7 @@ ctld.pickupZones = {
     { "Taftanaz Pickup Zone-1", "blue", -1, "yes", 2 },
     { "Tabqa Pickup Zone-1", "blue", -1, "yes", 2 },
     { "Hatay Pickup Zone-1", "blue", -1, "yes", 2 },
-    { "Rene Mouawad Pickup Zone-1", "blue", -1, "yes", 2 }
+    { "Palmyra Pickup Zone-1", "blue", -1, "yes", 2 }
 }
 
 
@@ -332,14 +332,13 @@ ctld.transportPilotNames = {
 ctld.logisticUnits = {
     "Farp Lima Warehouse-1",
     "Akrotiri Warehouse-1",
-    "FARP Mike Pickup Zone-1",
-    "Lakatamia-1",
-    "Rene Mouawad-1",
-    "Al Duhur-1",
-    "Taftanaz-1",
-    "Tabqa-1",
-    "Hatay-1",
-    "Rene Mouawad-1",
+    "FARP Mike Warehouse-1",
+    "Lakatamia Warehouse-1",
+    "Rene Mouawad Warehouse-1",
+    "Al Duhur Warehouse-1",
+    "Taftanaz Warehouse-1",
+    "Tabqa Warehouse-1",
+    "Hatay Warehouse-1",
     "Palmyra Warehouse-1",
     "Al Assad Warehouse-1"
 }
@@ -498,8 +497,8 @@ ctld.spawnableCrates = {
         { weight = 1038, desc = "Strela-1 9P31", unit = "Strela-1 9P31", side = 1, cratesRequired = 1 },
         { weight = 512, desc = "Strela-1 9P31 (internal)", unit = "Strela-1 9P31", side = 1, internal = 1, cratesRequired = 2 },
 
-        { weight = 1039, desc = "M1097 Avenger", unit = "M1097 Avenger", side = 2, cratesRequired = 1 },
-        { weight = 513, desc = "M1097 Avenger (internal)", unit = "M1097 Avenger", side = 2, internal = 1, cratesRequired = 2 },
+        { weight = 1039, desc = "2S6 Tunguska", unit = "2S6 Tunguska", side = 2, cratesRequired = 1 },
+        { weight = 513, desc = "2S6 Tunguska (internal)", unit = "2S6 Tunguska", side = 2, internal = 1, cratesRequired = 2 },
     },
     ["AA mid range"] = {
         -- KUB SYSTEM
