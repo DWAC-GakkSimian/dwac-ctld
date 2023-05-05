@@ -39,6 +39,24 @@ ctld.alreadyInitialized = false -- if true, ctld.initialize() will not run
 -- ************************************************************************
 -- *********************  USER CONFIGURATION ******************************
 -- ************************************************************************
+
+-- ************************************************************************
+-- Load/Save persistence
+-- ************************************************************************
+ctld.allowSave = true
+ctld.spawnedGroups = {} -- list of mist.dynAdd ready groups 'unpacked' during CTLD operations.
+ctld.saveInterval = 900 -- = 15 minutes
+ctld.saveFilePath = nil
+ctld.saveFileName = 'Caucus_CF_CTLD_Spawned_Save.lua'
+if lfs then 
+	ctld.saveFilePath = lfs.writedir()..'Missions\\Saves'
+	lfs.mkdir(ctld.saveFilePath) -- make path if needed
+    ctld.saveFilePath = ctld.saveFilePath..'\\'..ctld.saveFileName -- set full path to file
+end
+-- ************************************************************************
+-- End Load/Save persistence
+-- ************************************************************************
+
 ctld.staticBugWorkaround = false --  DCS had a bug where destroying statics would cause a crash. If this happens again, set this to TRUE
 
 ctld.disableAllSmoke = false -- if true, all smoke is diabled at pickup and drop off zones regardless of settings below. Leave false to respect settings below
@@ -3753,6 +3771,11 @@ function ctld.spawnCrateGroup(_heli, _positions, _types)
 
     local _spawnedGroup = Group.getByName(mist.dynAdd(_group).name)
 
+    -- ************************************************************************
+    -- Load/Save persistence
+    -- ************************************************************************
+    ctld.addToSpawnedGroups( _group ) -- for periodic saving and reload upon mission start
+
     return _spawnedGroup
 end
 
@@ -6276,3 +6299,104 @@ ctld.eventoninject = true -- fire OnAfterCratesBuild and OnAfterTroopsDeployed e
 --            env.info(tostring(key))
 --            env.info(tostring(value))
 --        end
+
+-- ************************************************************************
+-- Load/Save persistence
+-- ** Utils taken from https://github.com/Dzsek/zoneCommander
+-- Save and Load methods for CTLD spawned units
+-- ************************************************************************
+Utils = {}
+do
+	Utils.canAccessFS = ctld.allowSave
+	function Utils.saveTable(filename, variablename, data)
+		if not Utils.canAccessFS then 
+			return
+		end
+		
+		if not io then
+			print( "No IO" )
+			Utils.canAccessFS = false
+            env.info( "CTLD Persistance disabled" )
+			return
+		end
+	
+		local str = variablename..' = {}'
+		for i,v in pairs(data) do
+			str = str..'\n'..variablename..'[\''..i..'\'] = '..Utils.serializeValue(v)
+		end
+	
+		File = io.open(filename, "w")
+		File:write(str)
+		File:close()
+	end
+	
+	function Utils.serializeValue(value)
+		local res = ''
+		if type(value)=='number' or type(value)=='boolean' then
+			res = res..tostring(value)
+		elseif type(value)=='string' then
+			res = res..'\''..value..'\''
+		elseif type(value)=='table' then
+			res = res..'{ '
+			for i,v in pairs(value) do
+				if type(i)=='number' then
+					res = res..'['..i..']='..Utils.serializeValue(v)..','
+				else
+					res = res..'[\''..i..'\']='..Utils.serializeValue(v)..','
+				end
+			end
+			res = res:sub(1,-2)
+			res = res..' }'
+		end
+		return res
+	end
+	
+	function Utils.loadTable(filename)
+		if not Utils.canAccessFS then 
+			return
+		end
+		
+		if not lfs then
+			Utils.canAccessFS = false
+			trigger.action.outText('Persistance disabled', 30)
+			return
+		end
+		
+		if lfs.attributes(filename) then
+			dofile(filename)
+		end
+	end
+end
+
+function ctld.saveSpawnedGroups()
+    if ctld.spawnedGroups ~= nil then
+        Utils.saveTable( ctld.saveFilePath, "ctldSpawnedGroups", ctld.spawnedGroups )
+    end
+end
+
+-- Even dead units will be spawned as a SAM can be repaired
+function ctld.loadSpawnedGroups()
+    env.info( "CTLD Loading spawned Groups" )
+    Utils.loadTable( ctld.saveFilePath ) -- creates a global table from name in file.  See ctld.saveSpawnedGroups() for hard-coded name
+    if ctldSpawnedGroups ~= nil then
+        ctld.spawnedGroups = ctldSpawnedGroups
+        for _,_group in pairs( ctldSpawnedGroups ) do
+            mist.dynAdd( _group )
+        end
+    end
+end
+
+if ctld.allowSave then
+    ctld.loadSpawnedGroups()
+    ctld.timerSaveSpawnedGroups = TIMER:New(ctld.saveSpawnedGroups)
+    ctld.timerSaveSpawnedGroups:Start(15, ctld.saveInterval) -- start saving in 15 minutes and every ctld.saveInterval after
+    
+    env.info( "CTLD save path: "..ctld.saveFilePath )
+end
+
+function ctld.addToSpawnedGroups( _group )
+    env.info( "CTLD spawned group added to save collection: ".._group.name )
+    if _group ~= nil then
+        table.insert( ctld.spawnedGroups, _group )
+    end
+end
