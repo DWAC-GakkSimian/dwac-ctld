@@ -825,7 +825,7 @@ function ctld.cratesInZone(_zone, _flagNumber)
         return
     end
 
-    local _zonePos = mist.utils.zoneToVec3(_zone)
+    local _zonePos = mist.DwacUtils.zoneToVec3(_zone)
 
     --ignore side, if crate has been used its discounted from the count
     local _crateTables = { ctld.spawnedCratesRED, ctld.spawnedCratesBLUE, ctld.missionEditorCargoCrates }
@@ -959,7 +959,7 @@ function ctld.countDroppedGroupsInZone(_zone, _blueFlag, _redFlag)
         return
     end
 
-    local _zonePos = mist.utils.zoneToVec3(_zone)
+    local _zonePos = mist.DwacUtils.zoneToVec3(_zone)
 
     local _redCount = 0;
     local _blueCount = 0;
@@ -970,7 +970,7 @@ function ctld.countDroppedGroupsInZone(_zone, _blueFlag, _redFlag)
             local _groupUnits = ctld.getGroup(_groupName)
 
             if #_groupUnits > 0 then
-                local _zonePos = mist.utils.zoneToVec3(_zone)
+                local _zonePos = mist.DwacUtils.zoneToVec3(_zone)
                 local _dist = ctld.getDistance(_groupUnits[1]:getPoint(), _zonePos)
 
                 if _dist <= _triggerZone.radius then
@@ -1006,7 +1006,7 @@ function ctld.countDroppedUnitsInZone(_zone, _blueFlag, _redFlag)
         return
     end
 
-    local _zonePos = mist.utils.zoneToVec3(_zone)
+    local _zonePos = mist.DwacUtils.zoneToVec3(_zone)
 
     local _redCount = 0;
     local _blueCount = 0;
@@ -1019,7 +1019,7 @@ function ctld.countDroppedUnitsInZone(_zone, _blueFlag, _redFlag)
 
             if #_groupUnits > 0 then
 
-                local _zonePos = mist.utils.zoneToVec3(_zone)
+                local _zonePos = mist.DwacUtils.zoneToVec3(_zone)
                 for _,_unit in pairs(_groupUnits) do
                     local _dist = ctld.getDistance(_unit:getPoint(), _zonePos)
 
@@ -1060,7 +1060,7 @@ function ctld.createRadioBeaconAtZone(_zone, _coalition, _batteryLife, _name)
         return
     end
 
-    local _zonePos = mist.utils.zoneToVec3(_zone)
+    local _zonePos = mist.DwacUtils.zoneToVec3(_zone)
 
     ctld.beaconCount = ctld.beaconCount + 1
 
@@ -1618,10 +1618,10 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight,_side)
 
         if ctld.slingLoad then
 			if _crateType["internal"] ~= 1 then
-				_crate = mist.utils.deepCopy(ctld.spawnableCratesModel_sling)
+				_crate = mist.DwacUtils.deepCopy(ctld.spawnableCratesModel_sling)
 				_crate["canCargo"] = true
 			else
-				_crate = mist.utils.deepCopy(ctld.spawnableCratesModel_load)
+				_crate = mist.DwacUtils.deepCopy(ctld.spawnableCratesModel_load)
 				_crate["canCargo"] = true
 			end
         end
@@ -1882,7 +1882,7 @@ function ctld.metersToFeet(_meters)
 
     local _feet = _meters * 3.2808399
 
-    return mist.utils.round(_feet)
+    return mist.DwacUtils.round(_feet)
 end
 
 function ctld.inAir(_heli)
@@ -2740,7 +2740,7 @@ function ctld.checkHoverStatus()
 
                                 _crate.crateUnit:destroy()
 
-                                local _copiedCrate = mist.utils.deepCopy(_crate.details)
+                                local _copiedCrate = mist.DwacUtils.deepCopy(_crate.details)
                                 _copiedCrate.simulatedSlingload = true
                                 --ctld.logTrace(string.format("_copiedCrate = %s", ctld.p(_copiedCrate)))
                                 ctld.inTransitSlingLoadCrates[_name] = _copiedCrate
@@ -2801,7 +2801,7 @@ function ctld.loadNearbyCrate(_name)
 
                         _crate.crateUnit:destroy()
 
-                        local _copiedCrate = mist.utils.deepCopy(_crate.details)
+                        local _copiedCrate = mist.DwacUtils.deepCopy(_crate.details)
                         _copiedCrate.simulatedSlingload = true
                         ctld.inTransitSlingLoadCrates[_name] = _copiedCrate
                         ctld.adaptWeightToCargo(_name)
@@ -2852,7 +2852,7 @@ function ctld.Vec2Translate(a, distance, angle)
 function ctld.GetOpenCargoDoorDirection( unit )
     local type_name = unit:getTypeName()
     local _headingRadians = mist.getHeading( unit )
-    local _unitHeading = mist.utils.toDegree(_headingRadians)
+    local _unitHeading = mist.DwacUtils.toDegree(_headingRadians)
 
     if not ctld.requireOpenDoors then
 
@@ -3029,14 +3029,14 @@ end
 
 function ctld.getCompassBearing(_ref, _unitPos)
 
-    _ref = mist.utils.makeVec3(_ref, 0) -- turn it into Vec3 if it is not already.
-    _unitPos = mist.utils.makeVec3(_unitPos, 0) -- turn it into Vec3 if it is not already.
+    _ref = mist.DwacUtils.makeVec3(_ref, 0) -- turn it into Vec3 if it is not already.
+    _unitPos = mist.DwacUtils.makeVec3(_unitPos, 0) -- turn it into Vec3 if it is not already.
 
     local _vec = { x = _unitPos.x - _ref.x, y = _unitPos.y - _ref.y, z = _unitPos.z - _ref.z }
 
-    local _dir = mist.utils.getDir(_vec, _ref)
+    local _dir = mist.DwacUtils.getDir(_vec, _ref)
 
-    local _bearing = mist.utils.round(mist.utils.toDegree(_dir), 0)
+    local _bearing = mist.DwacUtils.round(mist.DwacUtils.toDegree(_dir), 0)
 
     return _bearing
 end
@@ -3260,7 +3260,7 @@ function ctld.findNearestAASystem(_heli,_aaSystem)
 
         local _hawkGroup = Group.getByName(_groupName)
 
-        --  env.info(_groupName..": "..mist.utils.tableShow(_hawkDetails))
+        --  env.info(_groupName..": "..mist.DwacUtils.tableShow(_hawkDetails))
         if _hawkGroup ~= nil and _hawkGroup:getCoalition() == _heli:getCoalition() and _hawkDetails[1].system.name == _aaSystem.name then
 
             local _units = _hawkGroup:getUnits()
@@ -3751,7 +3751,7 @@ function ctld.updateRadioBeacon(_beaconDetails)
 
     --fobs have unlimited battery life
     --    if _battery ~= -1 then
-    --        _text = _text.." "..mist.utils.round(_batLife).." seconds of battery"
+    --        _text = _text.." "..mist.DwacUtils.round(_batLife).." seconds of battery"
     --    end
 
     for _, _radio in pairs(_radioLoop) do
@@ -4171,7 +4171,7 @@ function ctld.countCompleteAASystems(_heli)
 
         local _hawkGroup = Group.getByName(_groupName)
 
-        --  env.info(_groupName..": "..mist.utils.tableShow(_hawkDetails))
+        --  env.info(_groupName..": "..mist.DwacUtils.tableShow(_hawkDetails))
         if _hawkGroup ~= nil and _hawkGroup:getCoalition() == _heli:getCoalition() then
 
             local _units = _hawkGroup:getUnits()
@@ -6628,27 +6628,27 @@ timer.scheduleFunction(ctld.initialize, nil, timer.getTime() + 2)
 
 -- ************************************************************************
 -- Load/Save persistence
--- ** Utils taken from https://github.com/Dzsek/zoneCommander
+-- ** DwacUtils taken from https://github.com/Dzsek/zoneCommander
 -- Save and Load methods for CTLD spawned units
 -- ************************************************************************
-Utils = {}
+DwacUtils = {}
 do
-	Utils.canAccessFS = ctld.allowSave
-	function Utils.saveTable(filename, variablename, data)
-		if not Utils.canAccessFS then 
+	DwacUtils.canAccessFS = ctld.allowSave
+	function DwacUtils.saveTable(filename, variablename, data)
+		if not DwacUtils.canAccessFS then 
 			return
 		end
 		
 		if not io then
 			print( "No IO" )
-			Utils.canAccessFS = false
+			DwacUtils.canAccessFS = false
             env.info( "CTLD Persistance disabled" )
 			return
 		end
 	
 		local str = variablename..' = {}'
 		for i,v in pairs(data) do
-			str = str..'\n'..variablename..'[\''..i..'\'] = '..Utils.serializeValue(v)
+			str = str..'\n'..variablename..'[\''..i..'\'] = '..DwacUtils.serializeValue(v)
 		end
 	
 		File = io.open(filename, "w")
@@ -6656,7 +6656,7 @@ do
 		File:close()
 	end
 	
-	function Utils.serializeValue(value)
+	function DwacUtils.serializeValue(value)
 		local res = ''
 		if type(value)=='number' or type(value)=='boolean' then
 			res = res..tostring(value)
@@ -6666,9 +6666,9 @@ do
 			res = res..'{ '
 			for i,v in pairs(value) do
 				if type(i)=='number' then
-					res = res..'['..i..']='..Utils.serializeValue(v)..','
+					res = res..'['..i..']='..DwacUtils.serializeValue(v)..','
 				else
-					res = res..'[\''..i..'\']='..Utils.serializeValue(v)..','
+					res = res..'[\''..i..'\']='..DwacUtils.serializeValue(v)..','
 				end
 			end
 			res = res:sub(1,-2)
@@ -6677,13 +6677,13 @@ do
 		return res
 	end
 	
-	function Utils.loadTable(filename)
-		if not Utils.canAccessFS then 
+	function DwacUtils.loadTable(filename)
+		if not DwacUtils.canAccessFS then 
 			return
 		end
 		
 		if not lfs then
-			Utils.canAccessFS = false
+			DwacUtils.canAccessFS = false
 			trigger.action.outText('Persistance disabled', 30)
 			return
 		end
@@ -6696,14 +6696,14 @@ end
 
 function ctld.saveSpawnedGroups()
     if ctld.spawnedGroups ~= nil then
-        Utils.saveTable( ctld.saveFilePath, "ctldSpawnedGroups", ctld.spawnedGroups )
+        DwacUtils.saveTable( ctld.saveFilePath, "ctldSpawnedGroups", ctld.spawnedGroups )
     end
 end
 
 -- Even dead units will be spawned as a SAM can be repaired
 function ctld.loadSpawnedGroups()
     env.info( "CTLD Loading spawned Groups" )
-    Utils.loadTable( ctld.saveFilePath ) -- creates a global table from name in file.  See ctld.saveSpawnedGroups() for hard-coded name
+    DwacUtils.loadTable( ctld.saveFilePath ) -- creates a global table from name in file.  See ctld.saveSpawnedGroups() for hard-coded name
     if ctldSpawnedGroups ~= nil then
         ctld.spawnedGroups = ctldSpawnedGroups
         for _,_group in pairs( ctldSpawnedGroups ) do
