@@ -803,10 +803,10 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight,_side)
 
         if ctld.slingLoad then
 			if _crateType["internal"] ~= 1 then
-				_crate = mist.DwacUtils.deepCopy(ctld.spawnableCratesModel_sling)
+				_crate = mist.utils.deepCopy(ctld.spawnableCratesModel_sling)
 				_crate["canCargo"] = true
 			else
-				_crate = mist.DwacUtils.deepCopy(ctld.spawnableCratesModel_load)
+				_crate = mist.utils.deepCopy(ctld.spawnableCratesModel_load)
 				_crate["canCargo"] = true
 			end
         end
@@ -1067,7 +1067,7 @@ function ctld.metersToFeet(_meters)
 
     local _feet = _meters * 3.2808399
 
-    return mist.DwacUtils.round(_feet)
+    return mist.utils.round(_feet)
 end
 
 function ctld.inAir(_heli)
@@ -1925,7 +1925,7 @@ function ctld.checkHoverStatus()
 
                                 _crate.crateUnit:destroy()
 
-                                local _copiedCrate = mist.DwacUtils.deepCopy(_crate.details)
+                                local _copiedCrate = mist.utils.deepCopy(_crate.details)
                                 _copiedCrate.simulatedSlingload = true
                                 --ctld.logTrace(string.format("_copiedCrate = %s", ctld.p(_copiedCrate)))
                                 ctld.inTransitSlingLoadCrates[_name] = _copiedCrate
@@ -1986,7 +1986,7 @@ function ctld.loadNearbyCrate(_name)
 
                         _crate.crateUnit:destroy()
 
-                        local _copiedCrate = mist.DwacUtils.deepCopy(_crate.details)
+                        local _copiedCrate = mist.utils.deepCopy(_crate.details)
                         _copiedCrate.simulatedSlingload = true
                         ctld.inTransitSlingLoadCrates[_name] = _copiedCrate
                         ctld.adaptWeightToCargo(_name)
@@ -2037,7 +2037,7 @@ function ctld.Vec2Translate(a, distance, angle)
 function ctld.GetOpenCargoDoorDirection( unit )
     local type_name = unit:getTypeName()
     local _headingRadians = mist.getHeading( unit )
-    local _unitHeading = mist.DwacUtils.toDegree(_headingRadians)
+    local _unitHeading = mist.utils.toDegree(_headingRadians)
 
     if not ctld.requireOpenDoors then
 
@@ -2216,14 +2216,14 @@ end
 
 function ctld.getCompassBearing(_ref, _unitPos)
 
-    _ref = mist.DwacUtils.makeVec3(_ref, 0) -- turn it into Vec3 if it is not already.
-    _unitPos = mist.DwacUtils.makeVec3(_unitPos, 0) -- turn it into Vec3 if it is not already.
+    _ref = mist.utils.makeVec3(_ref, 0) -- turn it into Vec3 if it is not already.
+    _unitPos = mist.utils.makeVec3(_unitPos, 0) -- turn it into Vec3 if it is not already.
 
     local _vec = { x = _unitPos.x - _ref.x, y = _unitPos.y - _ref.y, z = _unitPos.z - _ref.z }
 
-    local _dir = mist.DwacUtils.getDir(_vec, _ref)
+    local _dir = mist.utils.getDir(_vec, _ref)
 
-    local _bearing = mist.DwacUtils.round(mist.DwacUtils.toDegree(_dir), 0)
+    local _bearing = mist.utils.round(mist.utils.toDegree(_dir), 0)
 
     return _bearing
 end
@@ -2447,7 +2447,7 @@ function ctld.findNearestAASystem(_heli,_aaSystem)
 
         local _hawkGroup = Group.getByName(_groupName)
 
-        --  env.info(_groupName..": "..mist.DwacUtils.tableShow(_hawkDetails))
+        --  env.info(_groupName..": "..mist.utils.tableShow(_hawkDetails))
         if _hawkGroup ~= nil and _hawkGroup:getCoalition() == _heli:getCoalition() and _hawkDetails[1].system.name == _aaSystem.name then
 
             local _units = _hawkGroup:getUnits()
@@ -2941,7 +2941,7 @@ function ctld.updateRadioBeacon(_beaconDetails)
 
     --fobs have unlimited battery life
     --    if _battery ~= -1 then
-    --        _text = _text.." "..mist.DwacUtils.round(_batLife).." seconds of battery"
+    --        _text = _text.." "..mist.utils.round(_batLife).." seconds of battery"
     --    end
 
     for _, _radio in pairs(_radioLoop) do
@@ -3361,7 +3361,7 @@ function ctld.countCompleteAASystems(_heli)
 
         local _hawkGroup = Group.getByName(_groupName)
 
-        --  env.info(_groupName..": "..mist.DwacUtils.tableShow(_hawkDetails))
+        --  env.info(_groupName..": "..mist.utils.tableShow(_hawkDetails))
         if _hawkGroup ~= nil and _hawkGroup:getCoalition() == _heli:getCoalition() then
 
             local _units = _hawkGroup:getUnits()
@@ -4530,7 +4530,7 @@ function ctld.addJTACRadioCommand(_side)
                                 ctld.logTrace(string.format("jtacGroupSubMenuPath for %s is : %s", ctld.p(_jtacGroupName), ctld.p(ctld.jtacGroupSubMenuPath[_jtacGroupName])))
 
                                 --make a copy of the JTAC group submenu's path to insert the target's list on as many pages as required. The JTAC's group submenu path only leads to the first page
-                                local jtacTargetPagePath = mist.DwacUtils.deepCopy(ctld.jtacGroupSubMenuPath[_jtacGroupName])
+                                local jtacTargetPagePath = mist.utils.deepCopy(ctld.jtacGroupSubMenuPath[_jtacGroupName])
                                 --add a reset targeting option to revert to automatic JTAC unit targeting
                                 missionCommands.addCommandForGroup(_groupId, "Reset TGT Selection", jtacTargetPagePath, ctld.setJTACTarget, {jtacGroupName = _jtacGroupName, targetName = nil})
 
