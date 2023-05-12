@@ -203,7 +203,8 @@ ctld.pickupZones = {
     { "Taftanaz Pickup Zone-1", "blue", -1, "yes", 2 },
     { "Tabqa Pickup Zone-1", "blue", -1, "yes", 2 },
     { "Hatay Pickup Zone-1", "blue", -1, "yes", 2 },
-    { "Palmyra Pickup Zone-1", "blue", -1, "yes", 2 }
+    { "Palmyra Pickup Zone-1", "blue", -1, "yes", 2 },
+    { "Kingsfield Pickup Zone-1", "blue", -1, "yes", 2 }
 }
 
 
@@ -339,7 +340,15 @@ ctld.transportPilotNames = {
     "Al Assad UH-1-1-1",
     "Al Assad UH-1-2-1",
     "Al Assad UH-60-1-1",
-    "Al Assad UH-60-2-1"
+    "Al Assad UH-60-2-1",
+    "Kingsfield - AH-64D-1-1",    
+    "Kingsfield - AH-64D-2-1",
+    "Kingsfield KA-50 III-1-1",    
+    "Kingsfield KA-50 III-2-1",
+    "Kingsfield MI-24-1-1",    
+    "Kingsfield MI-24-2-1",
+    "Kingsfield MI-8-1-1",    
+    "Kingsfield MI-8-2-1"
 }
 
 -- ************** Logistics UNITS FOR CRATE SPAWNING ******************
@@ -358,7 +367,8 @@ ctld.logisticUnits = {
     "Tabqa Warehouse-1",
     "Hatay Warehouse-1",
     "Palmyra Warehouse-1",
-    "Al Assad Warehouse-1"
+    "Al Assad Warehouse-1",
+    "Kingsfield Warehouse-1"
 }
 
 -- ************** UNITS ABLE TO TRANSPORT VEHICLES ******************
