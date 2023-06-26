@@ -59,7 +59,7 @@ end
 
 ctld.staticBugWorkaround = false --  DCS had a bug where destroying statics would cause a crash. If this happens again, set this to TRUE
 
-ctld.disableAllSmoke = false -- if true, all smoke is diabled at pickup and drop off zones regardless of settings below. Leave false to respect settings below
+ctld.disableAllSmoke = true -- if true, all smoke is diabled at pickup and drop off zones regardless of settings below. Leave false to respect settings below
 
 ctld.hoverPickup = false --  if set to false you can load crates with the F10 menu instead of hovering... Only if not using real crates!
 
@@ -455,10 +455,10 @@ ctld.transportPilotNames = {
     "6a. Gelendzhik ↔ UH1H-1",
     "6a. Krymsk ↔ UH1H-2",
     "4c. Krasnodar-Center ↔ UH1H-1",
-    "Rotary-1-1",
-    "Rotary-1-3",
-    "Rotary-2-1",
-    "Rotary-2-2",
+    "KQ93 ↔ Ka-50-1-1",
+    "KQ93 ↔ Ka-50-2-1",
+    "KQ93 ↔ UH-1H-1",
+    "KQ93 ↔ UH-1H-2",
     "1f.  Cruiser UH-1-1",
     "1f.  Cruiser UH-1-2",
     "1f.  Cruiser UH-1-3",

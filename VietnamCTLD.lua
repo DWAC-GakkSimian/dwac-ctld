@@ -47,7 +47,7 @@ ctld.allowSave = true
 ctld.spawnedGroups = {} -- list of mist.dynAdd ready groups 'unpacked' during CTLD operations.
 ctld.saveInterval = 900 -- = 15 minutes
 ctld.saveFilePath = nil
-ctld.saveFileName = 'Vietnam_CTLD_Spawned_Save.lua'
+ctld.saveFileName = 'Fortunate_Son_CTLD_Save.lua'
 if lfs then 
 	ctld.saveFilePath = lfs.writedir()..'Missions\\Saves'
 	lfs.mkdir(ctld.saveFilePath) -- make path if needed
@@ -194,11 +194,11 @@ ctld.JTAC_lock = "all" -- "vehicle" OR "troop" OR "all" forces JTAC to only lock
 
 --pickupZones = { "Zone name or Ship Unit Name", "smoke color", "limit (-1 unlimited)", "ACTIVE (yes/no)", "side (0 = Both sides / 1 = Red / 2 = Blue )", flag number (optional) }
 ctld.pickupZones = {
-    { "pickzone1", "blue", -1, "yes", 0 },
-    { "pickzone2", "blue", -1, "yes", 0 },
-    { "pickzone3", "blue", -1, "yes", 0 },
-    { "pickzone4", "blue", -1, "yes", 0 },
-    { "pickzone5", "blue", -1, "yes", 0 },
+    { "London-PickupZone-1", "blue", -1, "yes", 0 },
+    { "Dallas-PickupZone-1", "blue", -1, "yes", 0 },
+    { "Sukhumi-PickupZone-1", "blue", -1, "yes", 0 },
+    { "Batumi-PickupZone-1", "blue", -1, "yes", 0 },
+    { "Gudauta-PickupZone-1", "blue", -1, "yes", 0 },
     { "pickzone6", "blue", -1, "yes", 0 },
     { "pickzone7", "blue", -1, "yes", 0 },
     { "pickzone8", "blue", -1, "yes", 0 },
@@ -260,40 +260,43 @@ ctld.wpZones = {
 
 -- Use any of the predefined names or set your own ones
 ctld.transportPilotNames = {
-    "London-UH-1-1-1",
-    "London-UH-1-2-1",
-    "London-UH-1-3-1",
-    "London-UH-1-4-1",
-    "London-MI-8-1-1",
-    "London-MI-8-2-1",
-    "London-MI-8-3-1",
-    "London-MI-8-4-1",
-    "London-MI-24-1-1",
-    "London-MI-24-2-1",
+    "London-UH1-1-1",
+    "London-UH1-2-1",
+    "London-MI8-1-1",
+    "London-MI8-2-1",
+    "London-MI8-3-1",
+    "London-MI24-1-1",
+    "London-MI24-2-1",
+    "London-MI24-3-1",
 
-    "helicargo11",
-    "helicargo12",
-    "helicargo13",
-    "helicargo14",
-    "helicargo15",
-    "helicargo16",
-    "helicargo17",
-    "helicargo18",
-    "helicargo19",
-    "helicargo20",
+    "Dallas-UH1-1-1",
+    "Dallas-UH1-2-1",
+    "Dallas-MI8-1-1",
+    "Dallas-MI8-2-1",
+    "Dallas-MI8-3-1",
+    "Dallas-MI24-1-1",
+    "Dallas-MI24-2-1",
+    "Dallas-MI24-3-1",
+    
+    "Sukhumi-UH1-1-1",
+    "Sukhumi-UH1-2-1",
+    "Sukhumi-MI8-1-1",
+    "Sukhumi-MI8-2-1",
+    "Sukhumi-MI8-3-1",
+    "Sukhumi-MI24-1-1",
+    "Sukhumi-MI24-2-1",
 
-    "helicargo21",
-    "helicargo22",
-    "helicargo23",
-    "helicargo24",
-    "helicargo25",
+    "Gudauta-MI8-1-1",
+    "Gudauta-MI8-2-1",
+    "Gudauta-MI24-2-1",
+    "Gudauta-MI24-2-1",
+    "Gudauta-UH1-1-1",
+    "Gudauta-UH1-2-1",
 
-    "MEDEVAC #1",
-    "MEDEVAC #2",
-    "MEDEVAC #3",
-    "MEDEVAC #4",
-    "MEDEVAC #5",
-    "MEDEVAC #6",
+    "Batumi-MI8-1-1",
+    "Batumi-MI8-2-1",
+    "Batumi-UH1-1-1",
+    "Batumi-UH1-2-1",
     "MEDEVAC #7",
     "MEDEVAC #8",
     "MEDEVAC #9",
@@ -422,11 +425,11 @@ ctld.extractableGroups = {
 -- When a logistic unit is destroyed, you will no longer be able to spawn crates
 
 ctld.logisticUnits = {
-    "Tinian Warehouse-1",
-    "logistic2",
-    "logistic3",
-    "logistic4",
-    "logistic5",
+    "London-Warehouse-1",
+    "Dallas-Warehouse-1",
+    "Sukhumi-Warehouse-1",
+    "Batumi-Warehouse-1",
+    "Gudauta-Warehouse-1",
     "logistic6",
     "logistic7",
     "logistic8",
@@ -559,73 +562,37 @@ ctld.spawnableCrates = {
         -- side is optional but 2 is BLUE and 1 is RED
         -- dont use that option with the HAWK Crates
 		-- LIMIT to 12 per category and side or you won't see them in F1-12
-        --{ weight = 850, desc = "HMMWV - TOW (internal)", unit = "M1045 HMMWV TOW", side = 2, internal = 1, cratesRequired = 1 },
         { weight = 751, desc = "HMMWV - MG (internal)", unit = "M1043 HMMWV Armament", internal = 1, side = 2 },
-        { weight = 1839, desc = "M-113", unit = "M-113", internal = 0, side = 2,  cratesRequired = 1 },
-        --{ weight = 700, desc = "HMMWV - JTAC (internal)", unit = "Hummer", internal = 1, side = 2, cratesRequired = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
         { weight = 750, desc = "M-818 Ammo Truck (internal)", unit = "M 818", internal = 1, side = 2, cratesRequired = 2 },
         { weight = 1500, desc = "M-818 Ammo Truck", unit = "M 818", internal = 0, side = 2 },
-		
-        --{ weight = 1103, desc = "SKP-11 - JTAC", unit = "SKP-11", internal = 0 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
-        { weight = 1102, desc = "Ural-375 Ammo Truck", unit = "Ural-375", internal = 0, side = 1 },
+		{ weight = 865, desc = "M-109", unit = "M-109", internal = 0, side = 2 },
         { weight = 2145, desc = "FOB Crate", unit = "FOB-SMALL", internal = 0, cratesRequired = 3 } -- Builds a FOB! - requires 3 * ctld.cratesRequiredForFOB
     },
-	-- ["Ground Forces: Heavy"] = {
-	-- 	--{ weight = 2339, desc = "M-1 Abrams", unit = "M-1 Abrams", internal = 0, side = 2,  cratesRequired = 3 },
-	--     --{ weight = 2338, desc = "M-2 Bradley", unit = "M-2 Bradley", internal = 0, side = 2, cratesRequired = 2   },
-    --     { weight = 2339, desc = "M-113", unit = "M-113", internal = 0, side = 2,  cratesRequired = 1 },
-    --     --{ weight = 1100, desc = "BTR-D", unit = "BTR_D", internal = 0, side = 1, cratesRequired = 2 },
-    --     --{ weight = 1101, desc = "BRDM-2", unit = "BRDM-2", internal = 0, side = 1, cratesRequired = 2 }
-
-	-- },
-    -- ["AA short range"] = {
-
-    --     { weight = 1152, desc = "M1097 Avenger", unit = "M1097 Avenger", internal = 0, side = 1 },
-	-- 	{ weight = 1157, desc = "Roland ADS", unit = "Roland ADS", internal = 0, side = 2, cratesRequired = 2 },
-    --     { weight = 604, desc = "M1097 Avenger (internal)", unit = "M1097 Avenger", internal = 1, side = 2, cratesRequired = 2 },
-    --     { weight = 550, desc = "Vulcan (internal)", unit = "Vulcan", internal = 1, side = 2, cratesRequired = 3  },
-    --     { weight = 1156, desc = "Vulcan", unit = "Vulcan", internal = 0, side = 2, cratesRequired = 2  },
-		
-        
-	-- 	{ weight = 605, desc = "Strela-1 9P31(internal)", unit = "Strela-1 9P31", internal = 1, cratesRequired = 2 },
-    --     { weight = 1153, desc = "Strela-1 9P31", unit = "Strela-1 9P31", internal = 0 },
-	-- 	{ weight = 1154, desc = "SA-19 Tunguska 2S6", unit = "2S6 Tunguska", internal = 0, cratesRequired = 2 },
-	-- 	{ weight = 1400, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", internal = 0, cratesRequired = 2 }
-	    
-    -- },
-    -- ["AA mid range"] = {
-	-- 	{ weight = 530, desc = "SAM SA-15 Tor ", unit = "Tor 9A331 (internal)", internal = 1, side = 2, cratesRequired = 2 },
-	-- 	{ weight = 1061, desc = "SAM SA-15 Tor ", unit = "Tor 9A331", internal = 0, side = 2, cratesRequired = 1 },
-		
-    --     -- KUB SYSTEM
-    --     { weight = 801, desc = "KUB Launcher (internal)", unit = "Kub 2P25 ln", internal = 1, cratesRequired = 2 },
-    --     { weight = 756, desc = "KUB Radar (internal)", unit = "Kub 1S91 str", internal = 1, cratesRequired = 2 },
-    --     { weight = 570, desc = "KUB Repair (internal)", unit = "KUB Repair", internal = 1, cratesRequired = 2 },
-    --     { weight = 1060, desc = "KUB Launcher", unit = "Kub 2P25 ln", internal = 0, cratesRequired = 1 },
-    --     { weight = 1065, desc = "KUB Radar", unit = "Kub 1S91 str", internal = 0, cratesRequired = 1 },
-    --     { weight = 1070, desc = "KUB Repair", unit = "KUB Repair", internal = 0, cratesRequired = 1 },
-    --     -- End of KUB
-
-    --     -- BUK System
-    --     { weight = 1075, desc = "BUK Launcher", unit = "SA-11 Buk LN 9A310M1"},
-    --     { weight = 1080, desc = "BUK Search Radar", unit = "SA-11 Buk SR 9S18M1"},
-    --     { weight = 1085, desc = "BUK CC Radar", unit = "SA-11 Buk CC 9S470M1"},
-    --     { weight = 1090, desc = "BUK Repair", unit = "BUK Repair"}
-    --     -- END of BUK
-    -- },
-    -- ["AA long range"] = {
-    --     -- Patriot System
-    --     { weight = 1055, desc = "Patriot Launcher", unit = "Patriot ln", side = 2 },
-    --     { weight = 1056, desc = "Patriot Radar", unit = "Patriot str" , side = 2 },
-    --     { weight = 1057, desc = "Patriot ECS", unit = "Patriot ECS", side = 2 },
-    --     { weight = 1053, desc = "Patriot ICC", unit = "Patriot cp", side = 2 },
-    --     { weight = 1054, desc = "Patriot EPP", unit = "Patriot EPP", side = 2 },
-    --     { weight = 1058, desc = "Patriot AMG (optional)", unit = "Patriot AMG" , side = 2 },
-    --     { weight = 1059, desc = "Patriot Repair", unit = "Patriot Repair" , side = 2 },
-    --     -- End of Patriot
-
-    --     { weight = 595, desc = "Early Warning Radar", unit = "1L13 EWR", side = 1 }, -- cant be used by BLUE coalition
-    -- },
+	["Ground Forces: Heavy"] = {
+        { weight = 2337, desc = "M-60", unit = "M-60", internal = 0, side = 2,  cratesRequired = 3 },
+        { weight = 726, desc = "M978 HEMTT Tanker (internal)", unit = "M978 HEMTT Tanker", internal = 1, side = 2,  cratesRequired = 2 },
+        { weight = 1840, desc = "M978 HEMTT Tanker", unit = "M978 HEMTT Tanker", internal = 0, side = 2,  cratesRequired = 1 },
+        { weight = 725, desc = "M-113 (internal)", unit = "M-113", internal = 1, side = 2,  cratesRequired = 2 },
+        { weight = 1839, desc = "M-113", unit = "M-113", internal = 0, side = 2,  cratesRequired = 1 },
+	},
+    ["AA short range"] = {
+        { weight = 551, desc = "M48 Chaparral (internal)", unit = "M48 Chaparral", internal = 1, side = 2, cratesRequired = 2 },        
+        { weight = 1157, desc = "M48 Chaparral", unit = "M48 Chaparral", internal = 0, side = 2, cratesRequired = 1 },
+        { weight = 550, desc = "Vulcan (internal)", unit = "Vulcan", internal = 1, side = 2, cratesRequired = 2  },
+        { weight = 1156, desc = "Vulcan", unit = "Vulcan", internal = 0, side = 2, cratesRequired = 1  },	    
+    },
+    ["AA mid range"] = {
+        -- HAWK SYSTEM
+        { weight = 1086, desc = "Hawk cwar", unit = "Hawk cwar", internal = 1, cratesRequired = 1 },
+        { weight = 1081, desc = "Hawk ln", unit = "Hawk ln", internal = 1, cratesRequired = 1 },
+        { weight = 1076, desc = "Hawk pcp", unit = "Hawk pcp", internal = 1, cratesRequired = 1 },
+        { weight = 1062, desc = "Hawk sr", unit = "Hawk sr", internal = 1, cratesRequired = 1 },
+        { weight = 1066, desc = "Hawk tr", unit = "Hawk tr", internal = 1, cratesRequired = 1 },
+        { weight = 1071, desc = "HAWK Repair", unit = "HAWK Repair", internal = 1, cratesRequired = 1 },
+    },
+    ["AA long range"] = {
+         { weight = 595, desc = "Early Warning Radar", unit = "1L13 EWR", side = 1 }, -- cant be used by BLUE coalition
+    },
 }
 
 --- 3D model that will be used to represent a loadable crate ; by default, a generator
@@ -1449,7 +1416,7 @@ ctld.AASystemTemplate = {
             {name = "Hawk tr", desc = "HAWK Track Radar"},
             {name = "Hawk sr", desc = "HAWK Search Radar"},
             {name = "Hawk pcp", desc = "HAWK PCP"},
-	    {name = "Hawk cwar", desc = "HAWK CWAR"},
+	        {name = "Hawk cwar", desc = "HAWK CWAR"},
         },
         repair = "HAWK Repair",
     },
