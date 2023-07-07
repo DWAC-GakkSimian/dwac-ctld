@@ -26,7 +26,7 @@ ctld = {} -- DONT REMOVE!
 ctld.Id = "CTLD - "
 
 --- Version.
-ctld.Version = "20230610.01"
+ctld.Version = "20230707.01"
 ctld.buzVersion = "Buz102"
 
 -- debug level, specific to this module
@@ -45,13 +45,18 @@ ctld.alreadyInitialized = false -- if true, ctld.initialize() will not run
 -- ************************************************************************
 ctld.allowSave = true
 ctld.spawnedGroups = {} -- list of mist.dynAdd ready groups 'unpacked' during CTLD operations.
+ctld.spawnedStatics = {} -- used for FOB outposts
 ctld.saveInterval = 900 -- = 15 minutes
 ctld.saveFilePath = nil
 ctld.saveFileName = 'Fortunate_Son_CTLD_Save.lua'
+ctld.saveStaticFileName = 'Fortunate_Son_CTLD_Static_Save.lua'
+
 if lfs then 
 	ctld.saveFilePath = lfs.writedir()..'Missions\\Saves'
 	lfs.mkdir(ctld.saveFilePath) -- make path if needed
+    ctld.saveStaticFilePath = ctld.saveFilePath..'\\'..ctld.saveStaticFileName
     ctld.saveFilePath = ctld.saveFilePath..'\\'..ctld.saveFileName -- set full path to file
+
 end
 -- ************************************************************************
 -- End Load/Save persistence
@@ -111,7 +116,7 @@ ctld.troopPickupAtFOB = true -- if true, troops can also be picked up at a creat
 
 ctld.buildTimeFOB = 120 --time in seconds for the FOB to be built
 
-ctld.crateWaitTime = 15 -- time in seconds to wait before you can spawn another crate
+ctld.crateWaitTime = 10 -- time in seconds to wait before you can spawn another crate
 
 ctld.forceCrateToBeMoved = false -- a crate must be picked up at least once and moved before it can be unpacked. Helps to reduce crate spam
 
@@ -565,7 +570,6 @@ ctld.spawnableCrates = {
         { weight = 751, desc = "HMMWV - MG (internal)", unit = "M1043 HMMWV Armament", internal = 1, side = 2 },
         { weight = 750, desc = "M-818 Ammo Truck (internal)", unit = "M 818", internal = 1, side = 2, cratesRequired = 2 },
         { weight = 1500, desc = "M-818 Ammo Truck", unit = "M 818", internal = 0, side = 2 },
-		{ weight = 865, desc = "M-109", unit = "M-109", internal = 0, side = 2 },
         { weight = 2145, desc = "FOB Crate", unit = "FOB-SMALL", internal = 0, cratesRequired = 3 } -- Builds a FOB! - requires 3 * ctld.cratesRequiredForFOB
     },
 	["Ground Forces: Heavy"] = {
@@ -1592,6 +1596,9 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight,_side)
 				_crate = mist.utils.deepCopy(ctld.spawnableCratesModel_load)
 				_crate["canCargo"] = true
 			end
+        else
+            _crate = mist.utils.deepCopy(ctld.spawnableCratesModel_load)
+            _crate["canCargo"] = true
         end
 
         _crate["y"] = _point.z
@@ -1638,7 +1645,6 @@ function ctld.spawnFOBCrateStatic(_country, _unitId, _point, _name)
     mist.dynAddStatic(_crate)
 
     local _spawnedCrate = StaticObject.getByName(_crate["name"])
-    --local _spawnedCrate = coalition.addStaticObject(_country, _crate)
 
     return _spawnedCrate
 end
@@ -1661,6 +1667,10 @@ function ctld.spawnFOB(_country, _unitId, _point, _name)
     mist.dynAddStatic(_crate)
     local _spawnedCrate = StaticObject.getByName(_crate["name"])
     --local _spawnedCrate = coalition.addStaticObject(_country, _crate)
+    -- ************************************************************************
+    -- Load/Save persistence
+    -- ************************************************************************
+    ctld.addToSpawnedStatics( _crate ) -- for periodic saving and reload upon mission start
 
     local _id = ctld.getNextUnitId()
     local _tower = {
@@ -1678,6 +1688,10 @@ function ctld.spawnFOB(_country, _unitId, _point, _name)
     _tower["country"] = _country
 
     mist.dynAddStatic(_tower)
+    -- ************************************************************************
+    -- Load/Save persistence
+    -- ************************************************************************
+    ctld.addToSpawnedStatics( _tower ) -- for periodic saving and reload upon mission start
 
     return _spawnedCrate
 end
@@ -2888,30 +2902,39 @@ function ctld.CanLoadCrate( unit, crate )
         end
   
         if type_name == "Mi-24P" then
-            if unit:getDrawArgumentValue(38) == 1 then
-                return  ctld.IsViableLoadWindow( _crateDir, 9 ) 
+            if unit:getDrawArgumentValue(38) == 1 or unit:getDrawArgumentValue(86) == 1 then
+                local _isViable = false
+                if ctld.IsViableLoadWindow( _crateDir, 9 ) then
+                    return true
+                elseif ctld.IsViableLoadWindow( _crateDir, 3 ) then
+                    return true
+                end
             end
-            if unit:getDrawArgumentValue(86) == 1 then
-                return ctld.IsViableLoadWindow( _crateDir, 3 )
-            end
+            return false
         end
   
         if type_name == "UH-1H" then
-            if unit:getDrawArgumentValue(43) == 1 then
-                return ctld.IsViableLoadWindow( _crateDir, 9 ) 
+            if unit:getDrawArgumentValue(43) == 1 or unit:getDrawArgumentValue(44) == 1 then
+                local _isViable = false
+                if ctld.IsViableLoadWindow( _crateDir, 9 ) then
+                    return true
+                elseif ctld.IsViableLoadWindow( _crateDir, 3 ) then
+                    return true
+                end
             end
-            if unit:getDrawArgumentValue(44) == 1 then
-                return ctld.IsViableLoadWindow( _crateDir, 3 )
-            end
+            return false
         end
         
         if type_name == "UH-60L" then
-            if unit:getDrawArgumentValue(401) == 1 then
-                return ctld.IsViableLoadWindow( _crateDir, 9 ) 
+            if unit:getDrawArgumentValue(401) == 1 or unit:getDrawArgumentValue(402) == 1 then
+                local _isViable = false
+                if ctld.IsViableLoadWindow( _crateDir, 9 ) then
+                    return true
+                elseif ctld.IsViableLoadWindow( _crateDir, 3 ) then
+                    return true
+                end
             end
-            if unit:getDrawArgumentValue(402) == 1 then
-                return ctld.IsViableLoadWindow( _crateDir, 3 )
-            end
+            return false
         end
         
         return false  
@@ -6570,6 +6593,16 @@ function ctld.initialize(force)
     end
     env.info("END search for crates")
 
+    
+
+    if ctld.allowSave then
+        ctld.loadSpawnedGroups()
+        ctld.timerSaveSpawnedGroups = TIMER:New(ctld.saveSpawnedGroups)
+        ctld.timerSaveSpawnedGroups:Start(900, ctld.saveInterval) -- start saving in 15 minutes and every ctld.saveInterval after
+        
+        env.info( "CTLD save path: "..ctld.saveFilePath )
+    end
+
     -- don't initialize more than once
     ctld.alreadyInitialized = true
 
@@ -6663,29 +6696,54 @@ do
 end
 
 function ctld.saveSpawnedGroups()
+    -- groups and statics
     if ctld.spawnedGroups ~= nil then
         DwacUtils.saveTable( ctld.saveFilePath, "ctldSpawnedGroups", ctld.spawnedGroups )
+    end
+    if ctld.spawnedStatics ~= nil then
+        DwacUtils.saveTable( ctld.saveStaticFilePath, "ctldSpawnedStatics", ctld.spawnedStatics )
     end
 end
 
 -- Even dead units will be spawned as a SAM can be repaired
 function ctld.loadSpawnedGroups()
+    -- groups and statics
     env.info( "CTLD Loading spawned Groups" )
+    env.info( "CTLD Group File Path: "..ctld.saveFilePath)
     DwacUtils.loadTable( ctld.saveFilePath ) -- creates a global table from name in file.  See ctld.saveSpawnedGroups() for hard-coded name
     if ctldSpawnedGroups ~= nil then
+        ctld.p( ctldSpawnedGroups )
         ctld.spawnedGroups = ctldSpawnedGroups
         for _,_group in pairs( ctldSpawnedGroups ) do
             mist.dynAdd( _group )
         end
     end
-end
 
-if ctld.allowSave then
-    ctld.loadSpawnedGroups()
-    ctld.timerSaveSpawnedGroups = TIMER:New(ctld.saveSpawnedGroups)
-    ctld.timerSaveSpawnedGroups:Start(15, ctld.saveInterval) -- start saving in 15 minutes and every ctld.saveInterval after
-    
-    env.info( "CTLD save path: "..ctld.saveFilePath )
+    env.info( "CTLD Loading spawned Statics" )
+    env.info( "CTLD Static File Path: "..ctld.saveStaticFilePath)
+    DwacUtils.loadTable( ctld.saveStaticFilePath ) -- creates a global table from name in file.  See ctld.saveSpawnedGroups() for hard-coded name
+    if ctldSpawnedStatics ~= nil then
+        ctld.spawnedStatics = ctldSpawnedStatics
+        for _,_static in pairs( ctldSpawnedStatics ) do
+            mist.dynAddStatic( _static )
+            if _static['type'] == 'outpost' then
+                local _fob = StaticObject.getByName(_static["name"])
+                table.insert(ctld.logisticUnits, _fob:getName()) -- makes deplorable..er...
+
+                -- add beacon
+                ctld.beaconCount = ctld.beaconCount + 1
+                local _radioBeaconName = "FOB Beacon #" .. ctld.beaconCount
+                local _point = ctld.getPointAt12Oclock(_fob, 25) -- beacon offset from outpost by 25m  
+                local _radioBeaconDetails = ctld.createRadioBeacon(_point, _fob:getCoalition(), _fob:getCountry(), _radioBeaconName, nil, true)
+                ctld.fobBeacons[_radioBeaconName] = { vhf = _radioBeaconDetails.vhf, uhf = _radioBeaconDetails.uhf, fm = _radioBeaconDetails.fm }
+
+                -- add troop pickup zone
+                if ctld.troopPickupAtFOB == true then
+                    table.insert(ctld.builtFOBS, _fob:getName())
+                end
+            end
+        end
+    end
 end
 
 function ctld.addToSpawnedGroups( _group )
@@ -6694,3 +6752,24 @@ function ctld.addToSpawnedGroups( _group )
         table.insert( ctld.spawnedGroups, _group )
     end
 end
+function ctld.addToSpawnedStatics( _static )
+    ctld.p( _static )
+    env.info( "CTLD spawned static added to save collection: ".._static.name )
+    if _static ~= nil then
+        table.insert( ctld.spawnedStatics, _static )
+    end
+end
+
+function ctld.missionStopHandler( event )
+    if ctld.allowSave then
+        ctld.saveSpawnedGroups()
+    end
+end
+
+ctld.dwacEventHandler = {}
+function ctld.dwacEventHandler:onEvent( event )
+    if event.id == world.event.S_EVENT_MISSION_END then
+        ctld.missionStopHandler(event)
+    end
+end
+world.addEventHandler(ctld.dwacEventHandler)
