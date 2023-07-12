@@ -270,6 +270,8 @@ ctld.transportPilotNames = {
     "London-MI8-1-1",
     "London-MI8-2-1",
     "London-MI8-3-1",
+    "London-MI8-4-1",
+    "London-MI8-5-1",
     "London-MI24-1-1",
     "London-MI24-2-1",
     "London-MI24-3-1",
@@ -587,12 +589,12 @@ ctld.spawnableCrates = {
     },
     ["AA mid range"] = {
         -- HAWK SYSTEM
-        { weight = 1086, desc = "Hawk cwar", unit = "Hawk cwar", internal = 1, cratesRequired = 1 },
-        { weight = 1081, desc = "Hawk ln", unit = "Hawk ln", internal = 1, cratesRequired = 1 },
-        { weight = 1076, desc = "Hawk pcp", unit = "Hawk pcp", internal = 1, cratesRequired = 1 },
-        { weight = 1062, desc = "Hawk sr", unit = "Hawk sr", internal = 1, cratesRequired = 1 },
-        { weight = 1066, desc = "Hawk tr", unit = "Hawk tr", internal = 1, cratesRequired = 1 },
-        { weight = 1071, desc = "HAWK Repair", unit = "HAWK Repair", internal = 1, cratesRequired = 1 },
+        { weight = 1086, desc = "Hawk cwar", unit = "Hawk cwar", cratesRequired = 1 },
+        { weight = 1081, desc = "Hawk ln", unit = "Hawk ln", cratesRequired = 1 },
+        { weight = 1076, desc = "Hawk pcp", unit = "Hawk pcp", cratesRequired = 1 },
+        { weight = 1062, desc = "Hawk sr", unit = "Hawk sr", cratesRequired = 1 },
+        { weight = 1066, desc = "Hawk tr", unit = "Hawk tr", cratesRequired = 1 },
+        { weight = 1071, desc = "HAWK Repair", unit = "HAWK Repair", cratesRequired = 1 },
     },
     ["AA long range"] = {
          { weight = 595, desc = "Early Warning Radar", unit = "1L13 EWR", side = 1 }, -- cant be used by BLUE coalition
