@@ -4422,6 +4422,12 @@ function ctld.spawnDroppedGroup(_point, _details, _spawnBehind, _maxSearch)
 
     local _spawnedGroup = Group.getByName(mist.dynAdd(_group).name)
 
+
+    -- ************************************************************************
+    -- Load/Save persistence
+    -- ************************************************************************
+    ctld.addToSpawnedGroups( _group ) -- for periodic saving and reload upon mission start
+    
     --local _spawnedGroup = coalition.addGroup(_details.country, Group.Category.GROUND, _group)
 
 

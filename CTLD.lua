@@ -79,7 +79,7 @@ ctld.maximumDistanceLogistic = 200 -- max distance from vehicle to logistics to 
 ctld.maximumSearchDistance = 4000 -- max distance for troops to search for enemy
 ctld.maximumMoveDistance = 2000 -- max distance for troops to move from drop point if no enemy is nearby
 
-ctld.minimumDeployDistance = 10 --00 -- minimum distance from a friendly pickup zone where you can deploy a crate
+ctld.minimumDeployDistance = 1000 -- minimum distance from a friendly pickup zone where you can deploy a crate
 
 ctld.numberOfTroops = 10 -- default number of troops to load on a transport heli or C-130 
 							-- also works as maximum size of group that'll fit into a helicopter unless overridden
@@ -4450,6 +4450,11 @@ function ctld.spawnDroppedGroup(_point, _details, _spawnBehind, _maxSearch)
     _group.country = _details.country;
 
     local _spawnedGroup = Group.getByName(mist.dynAdd(_group).name)
+
+    -- ************************************************************************
+    -- Load/Save persistence
+    -- ************************************************************************
+    ctld.addToSpawnedGroups( _group ) -- for periodic saving and reload upon mission start
 
     --local _spawnedGroup = coalition.addGroup(_details.country, Group.Category.GROUND, _group)
 
