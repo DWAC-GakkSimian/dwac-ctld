@@ -26,8 +26,8 @@ ctld = {} -- DONT REMOVE!
 ctld.Id = "CTLD - "
 
 --- Version.
-ctld.Version = "20211113.01"
-ctld.DWACVersion = "20230509.01"
+ctld.Version = "20230719.01"
+ctld.DWACVersion = "20230719.01"
 
 -- debug level, specific to this module
 ctld.Debug = true
@@ -45,12 +45,15 @@ ctld.alreadyInitialized = false -- if true, ctld.initialize() will not run
 -- ************************************************************************
 ctld.allowSave = true
 ctld.spawnedGroups = {} -- list of mist.dynAdd ready groups 'unpacked' during CTLD operations.
+ctld.spawnedStatics = {} -- used for FOB outposts
 ctld.saveInterval = 900 -- = 15 minutes
 ctld.saveFilePath = nil
-ctld.saveFileName = 'Syria_CF_CTLD_Spawned_Save.lua'
+ctld.saveFileName = 'Syria_CF_CTLD_Group_Save.lua'
+ctld.saveStaticFileName = 'Syria_CF_CTLD_Static_Save.lua'
 if lfs then 
 	ctld.saveFilePath = lfs.writedir()..'Missions\\Saves'
 	lfs.mkdir(ctld.saveFilePath) -- make path if needed
+    ctld.saveStaticFilePath = ctld.saveFilePath..'\\'..ctld.saveStaticFileName
     ctld.saveFilePath = ctld.saveFilePath..'\\'..ctld.saveFileName -- set full path to file
 end
 -- ************************************************************************
@@ -157,7 +160,7 @@ ctld.JTAC_LIMIT_BLUE = 10 -- max number of JTAC Crates for the BLUE Side
 
 ctld.JTAC_dropEnabled = true -- allow JTAC Crate spawn from F10 menu
 
-ctld.JTAC_maxDistance = 20000 -- How far a JTAC can "see" in meters (with Line of Sight)
+ctld.JTAC_maxDistance = 10000 -- How far a JTAC can "see" in meters (with Line of Sight)
 
 ctld.JTAC_smokeOn_RED = true -- enables marking of target with smoke for RED forces
 ctld.JTAC_smokeOn_BLUE = true -- enables marking of target with smoke for BLUE forces
@@ -205,7 +208,9 @@ ctld.pickupZones = {
     { "Hatay Pickup Zone-1", "blue", -1, "yes", 2 },
     { "Palmyra Pickup Zone-1", "blue", -1, "yes", 2 },
     { "Kingsfield Pickup Zone-1", "blue", -1, "yes", 2 },
-    { "Aleppo Pickup Zone-1", "blue", -1, "yes", 2 }
+    { "Aleppo Pickup Zone-1", "blue", -1, "yes", 2 },
+    { "Perth Pickup Zone-1", "blue", -1, "yes", 2 },
+    { "Dublin-PickupZone-1", "blue", -1, "yes", 2 }
 }
 
 
@@ -351,7 +356,11 @@ ctld.transportPilotNames = {
     "Kingsfield MI-8-1-1",    
     "Kingsfield MI-8-2-1",
     "Aleppo-MI-8-1-1",
-    "Aleppo-UH-1-1-1"
+    "Aleppo-UH-1-1-1",
+    "Perth-MI8-1-1",
+    "Perth-MI8-2-1",
+    "Dublin-MI8-1-1",
+    "Dublin-MI8-2-1",
 }
 
 -- ************** Logistics UNITS FOR CRATE SPAWNING ******************
@@ -372,7 +381,9 @@ ctld.logisticUnits = {
     "Palmyra Warehouse-1",
     "Al Assad Warehouse-1",
     "Kingsfield Warehouse-1",
-    "Aleppo Warehouse-1"
+    "Aleppo Warehouse-1",
+    "Perth-Warehouse-1",
+    "Dublin-Warehouse-1"
 }
 
 -- ************** UNITS ABLE TO TRANSPORT VEHICLES ******************
@@ -823,6 +834,9 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight,_side)
 				_crate = mist.utils.deepCopy(ctld.spawnableCratesModel_load)
 				_crate["canCargo"] = true
 			end
+        else
+            _crate = mist.utils.deepCopy(ctld.spawnableCratesModel_load)
+            _crate["canCargo"] = true
         end
 
         _crate["y"] = _point.z
@@ -892,6 +906,10 @@ function ctld.spawnFOB(_country, _unitId, _point, _name)
     mist.dynAddStatic(_crate)
     local _spawnedCrate = StaticObject.getByName(_crate["name"])
     --local _spawnedCrate = coalition.addStaticObject(_country, _crate)
+    -- ************************************************************************
+    -- Load/Save persistence
+    -- ************************************************************************
+    ctld.addToSpawnedStatics( _crate ) -- for periodic saving and reload upon mission start
 
     local _id = ctld.getNextUnitId()
     local _tower = {
@@ -909,6 +927,10 @@ function ctld.spawnFOB(_country, _unitId, _point, _name)
     _tower["country"] = _country
 
     mist.dynAddStatic(_tower)
+    -- ************************************************************************
+    -- Load/Save persistence
+    -- ************************************************************************
+    ctld.addToSpawnedStatics( _tower ) -- for periodic saving and reload upon mission start
 
     return _spawnedCrate
 end
@@ -1983,6 +2005,7 @@ function ctld.loadNearbyCrate(_name)
 
         if ctld.inTransitSlingLoadCrates[_name] == nil then
             local _crates = ctld.getCratesAndDistance(_transUnit)
+            local _inRangeButCannotLoad = false
 
             for _, _crate in pairs(_crates) do
 
@@ -2119,30 +2142,39 @@ function ctld.CanLoadCrate( unit, crate )
         end
   
         if type_name == "Mi-24P" then
-            if unit:getDrawArgumentValue(38) == 1 then
-                return  ctld.IsViableLoadWindow( _crateDir, 9 ) 
+            if unit:getDrawArgumentValue(38) == 1 or unit:getDrawArgumentValue(86) == 1 then
+                local _isViable = false
+                if ctld.IsViableLoadWindow( _crateDir, 9 ) then
+                    return true
+                elseif ctld.IsViableLoadWindow( _crateDir, 3 ) then
+                    return true
+                end
             end
-            if unit:getDrawArgumentValue(86) == 1 then
-                return ctld.IsViableLoadWindow( _crateDir, 3 )
-            end
+            return false
         end
   
         if type_name == "UH-1H" then
-            if unit:getDrawArgumentValue(43) == 1 then
-                return ctld.IsViableLoadWindow( _crateDir, 9 ) 
+            if unit:getDrawArgumentValue(43) == 1 or unit:getDrawArgumentValue(44) == 1 then
+                local _isViable = false
+                if ctld.IsViableLoadWindow( _crateDir, 9 ) then
+                    return true
+                elseif ctld.IsViableLoadWindow( _crateDir, 3 ) then
+                    return true
+                end
             end
-            if unit:getDrawArgumentValue(44) == 1 then
-                return ctld.IsViableLoadWindow( _crateDir, 3 )
-            end
+            return false
         end
         
         if type_name == "UH-60L" then
-            if unit:getDrawArgumentValue(401) == 1 then
-                return ctld.IsViableLoadWindow( _crateDir, 9 ) 
+            if unit:getDrawArgumentValue(401) == 1 or unit:getDrawArgumentValue(402) == 1 then
+                local _isViable = false
+                if ctld.IsViableLoadWindow( _crateDir, 9 ) then
+                    return true
+                elseif ctld.IsViableLoadWindow( _crateDir, 3 ) then
+                    return true
+                end
             end
-            if unit:getDrawArgumentValue(402) == 1 then
-                return ctld.IsViableLoadWindow( _crateDir, 3 )
-            end
+            return false
         end
         
         return false  
@@ -3294,8 +3326,8 @@ function ctld.unpackAASystem(_heli, _nearestCrate, _nearbyCrates,_aaSystemTempla
 
                     -- spawn in a circle around the crate
                     local _angle = math.pi * 2 * (_i - 1) / _launchers
-                    local _xOffset = math.cos(_angle) * 12
-                    local _yOffset = math.sin(_angle) * 12
+                    local _xOffset = (math.cos(_angle) * 12)
+                    local _yOffset = (math.sin(_angle) * 12)
 
                     local _point = _systemPart.crate.crateUnit:getPoint()
 
@@ -3567,8 +3599,8 @@ function ctld.spawnCrateGroup(_heli, _positions, _types)
     --mist function
     _group.category = Group.Category.GROUND
     _group.country = _heli:getCountry()
-
-    local _spawnedGroup = Group.getByName(mist.dynAdd(_group).name)
+    local _groupName = mist.dynAdd(_group).name
+    local _spawnedGroup = Group.getByName(_groupName)
 
     -- ************************************************************************
     -- Load/Save persistence
@@ -3632,6 +3664,11 @@ function ctld.spawnDroppedGroup(_point, _details, _spawnBehind, _maxSearch)
     _group.country = _details.country;
 
     local _spawnedGroup = Group.getByName(mist.dynAdd(_group).name)
+
+    -- ************************************************************************
+    -- Load/Save persistence
+    -- ************************************************************************
+    ctld.addToSpawnedGroups( _group ) -- for periodic saving and reload upon mission start
 
     --local _spawnedGroup = coalition.addGroup(_details.country, Group.Category.GROUND, _group)
 
@@ -5952,7 +5989,6 @@ function ctld.initialize(force)
         -- else
         --     _zone[3] = 0
         -- end
-    end
 
     -- Seperate troop teams into red and blue for random AI pickups
     if ctld.allowRandomAiTeamPickups == true then
@@ -6061,12 +6097,26 @@ function ctld.initialize(force)
                 end
             end
         end
+        end
     end
     env.info("END search for crates")
+
+    
+
+    if ctld.allowSave then
+        ctld.loadSpawnedGroups()
+        ctld.timerSaveSpawnedGroups = TIMER:New(ctld.saveSpawnedGroups)
+        ctld.timerSaveSpawnedGroups:Start(900, ctld.saveInterval) -- start saving in 15 minutes and every ctld.saveInterval after
+        
+        env.info( "CTLD save path: "..ctld.saveFilePath )
+    end
+
     -- don't initialize more than once
-    ctld.alreadyInitialized = false
+    ctld.alreadyInitialized = true
+
     env.info("CTLD READY")
 end
+
 
 -- initialize the random number generator to make it almost random
 math.random(); math.random(); math.random()
@@ -6077,21 +6127,6 @@ env.setErrorMessageBoxEnabled(false)
 -- initialize CTLD in 2 seconds, so other scripts have a chance to modify the configuration before initialization
 ctld.logInfo(string.format("Loading version %s in 2 seconds", ctld.Version))
 timer.scheduleFunction(ctld.initialize, nil, timer.getTime() + 2)
-
--- CTLD unit persistance
-ctld.enableLoadSave = true -- allow auto-saving and loading of files
-ctld.saveinterval = 60 -- save every 10 minutes
-ctld.filename = "FOOTHOLD_missionsave_part2.csv" --filename
-ctld.filepath = "C:\\Users\\luck\\Saved Games\\DCS.openbeta_server\\Missions\\Saves" --path D:\\DCS World OpenBeta D:\\Eagle Dynamics\\DCS World OpenBeta Server
-ctld.eventoninject = true -- fire OnAfterCratesBuild and OnAfterTroopsDeployed events when loading (uses Inject functions)
-
---Then use an initial load at the beginning of the mission:
-
---ctld:__Load(10)
-
---Start the CTLD
---ctld:__Start(2)
-
 
 --DEBUG FUNCTION
 --        for key, value in pairs(getmetatable(_spawnedCrate)) do
@@ -6169,14 +6204,20 @@ do
 end
 
 function ctld.saveSpawnedGroups()
+    -- groups and statics
     if ctld.spawnedGroups ~= nil then
         DwacUtils.saveTable( ctld.saveFilePath, "ctldSpawnedGroups", ctld.spawnedGroups )
+    end
+    if ctld.spawnedStatics ~= nil then
+        DwacUtils.saveTable( ctld.saveStaticFilePath, "ctldSpawnedStatics", ctld.spawnedStatics )
     end
 end
 
 -- Even dead units will be spawned as a SAM can be repaired
 function ctld.loadSpawnedGroups()
+    -- groups and statics
     env.info( "CTLD Loading spawned Groups" )
+    env.info( "CTLD Group File Path: "..ctld.saveFilePath)
     DwacUtils.loadTable( ctld.saveFilePath ) -- creates a global table from name in file.  See ctld.saveSpawnedGroups() for hard-coded name
     if ctldSpawnedGroups ~= nil then
         ctld.spawnedGroups = ctldSpawnedGroups
@@ -6184,14 +6225,32 @@ function ctld.loadSpawnedGroups()
             mist.dynAdd( _group )
         end
     end
-end
 
-if ctld.allowSave then
-    ctld.loadSpawnedGroups()
-    ctld.timerSaveSpawnedGroups = TIMER:New(ctld.saveSpawnedGroups)
-    ctld.timerSaveSpawnedGroups:Start(15, ctld.saveInterval) -- start saving in 15 minutes and every ctld.saveInterval after
-    
-    env.info( "CTLD save path: "..ctld.saveFilePath )
+    env.info( "CTLD Loading spawned Statics" )
+    env.info( "CTLD Static File Path: "..ctld.saveStaticFilePath)
+    DwacUtils.loadTable( ctld.saveStaticFilePath ) -- creates a global table from name in file.  See ctld.saveSpawnedGroups() for hard-coded name
+    if ctldSpawnedStatics ~= nil then
+        ctld.spawnedStatics = ctldSpawnedStatics
+        for _,_static in pairs( ctldSpawnedStatics ) do
+            mist.dynAddStatic( _static )
+            if _static['type'] == 'outpost' then
+                local _fob = StaticObject.getByName(_static["name"])
+                table.insert(ctld.logisticUnits, _fob:getName()) -- makes deplorable..er...
+
+                -- add beacon
+                ctld.beaconCount = ctld.beaconCount + 1
+                local _radioBeaconName = "FOB Beacon #" .. ctld.beaconCount
+                local _point = ctld.getPointAt12Oclock(_fob, 25) -- beacon offset from outpost by 25m  
+                local _radioBeaconDetails = ctld.createRadioBeacon(_point, _fob:getCoalition(), _fob:getCountry(), _radioBeaconName, nil, true)
+                ctld.fobBeacons[_radioBeaconName] = { vhf = _radioBeaconDetails.vhf, uhf = _radioBeaconDetails.uhf, fm = _radioBeaconDetails.fm }
+
+                -- add troop pickup zone
+                if ctld.troopPickupAtFOB == true then
+                    table.insert(ctld.builtFOBS, _fob:getName())
+                end
+            end
+        end
+    end
 end
 
 function ctld.addToSpawnedGroups( _group )
@@ -6200,3 +6259,24 @@ function ctld.addToSpawnedGroups( _group )
         table.insert( ctld.spawnedGroups, _group )
     end
 end
+function ctld.addToSpawnedStatics( _static )
+    ctld.p( _static )
+    env.info( "CTLD spawned static added to save collection: ".._static.name )
+    if _static ~= nil then
+        table.insert( ctld.spawnedStatics, _static )
+    end
+end
+
+function ctld.missionStopHandler( event )
+    if ctld.allowSave then
+        ctld.saveSpawnedGroups()
+    end
+end
+
+ctld.dwacEventHandler = {}
+function ctld.dwacEventHandler:onEvent( event )
+    if event.id == world.event.S_EVENT_MISSION_END then
+        ctld.missionStopHandler(event)
+    end
+end
+world.addEventHandler(ctld.dwacEventHandler)
