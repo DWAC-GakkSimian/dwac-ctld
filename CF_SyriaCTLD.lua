@@ -210,7 +210,8 @@ ctld.pickupZones = {
     { "Kingsfield Pickup Zone-1", "blue", -1, "yes", 2 },
     { "Aleppo Pickup Zone-1", "blue", -1, "yes", 2 },
     { "Perth Pickup Zone-1", "blue", -1, "yes", 2 },
-    { "Dublin-PickupZone-1", "blue", -1, "yes", 2 }
+    { "Dublin-PickupZone-1", "blue", -1, "yes", 2 },
+    { "Incirlik-PickupZone-1", "blue", -1, "yes", 2 }
 }
 
 
@@ -361,6 +362,8 @@ ctld.transportPilotNames = {
     "Perth-MI8-2-1",
     "Dublin-MI8-1-1",
     "Dublin-MI8-2-1",
+    "Incirlik-MI8-1-1",
+    "Incirlik-MI8-2-1",
 }
 
 -- ************** Logistics UNITS FOR CRATE SPAWNING ******************
@@ -383,7 +386,8 @@ ctld.logisticUnits = {
     "Kingsfield Warehouse-1",
     "Aleppo Warehouse-1",
     "Perth-Warehouse-1",
-    "Dublin-Warehouse-1"
+    "Dublin-Warehouse-1",
+    "Incirlik-Warehouse-1"
 }
 
 -- ************** UNITS ABLE TO TRANSPORT VEHICLES ******************
