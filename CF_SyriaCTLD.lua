@@ -26,8 +26,8 @@ ctld = {} -- DONT REMOVE!
 ctld.Id = "CTLD - "
 
 --- Version.
-ctld.Version = "20230719.01"
-ctld.DWACVersion = "20230719.01"
+ctld.Version = "20230723.01"
+ctld.DWACVersion = "20230723.01"
 
 -- debug level, specific to this module
 ctld.Debug = true
@@ -211,7 +211,8 @@ ctld.pickupZones = {
     { "Aleppo Pickup Zone-1", "blue", -1, "yes", 2 },
     { "Perth Pickup Zone-1", "blue", -1, "yes", 2 },
     { "Dublin-PickupZone-1", "blue", -1, "yes", 2 },
-    { "Incirlik-PickupZone-1", "blue", -1, "yes", 2 }
+    { "Incirlik-PickupZone-1", "blue", -1, "yes", 2 },
+    { "Forrestal-1", "blue", -1, "yes", 2 }
 }
 
 
