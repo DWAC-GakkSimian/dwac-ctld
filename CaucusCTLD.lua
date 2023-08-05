@@ -26,8 +26,8 @@ ctld = {} -- DONT REMOVE!
 ctld.Id = "CTLD - "
 
 --- Version.
-ctld.Version = "20230707.01"
-ctld.DWACVersion = "20230509.01"
+ctld.Version = "20230804.01"
+ctld.DWACVersion = "20230804.01"
 
 -- debug level, specific to this module
 ctld.Debug = true
@@ -2342,9 +2342,7 @@ function ctld.CanLoadCrate( unit, crate )
                     return true
                 elseif ctld.IsViableLoadWindow( _crateDir, 3 ) then
                     return true
-            end
-            if unit:getDrawArgumentValue(86) == 1 then
-                return ctld.IsViableLoadWindow( _crateDir, 3 )
+                end
             end
             return false
         end
@@ -2377,7 +2375,7 @@ function ctld.CanLoadCrate( unit, crate )
     end -- nil
   
     return false
-  end
+end
 
 --recreates beacons to make sure they work!
 function ctld.refreshRadioBeacons()
@@ -6177,17 +6175,6 @@ function ctld.initialize(force)
         _zone[4] = 1
     end
 
-
-
-        --mark as active for refresh smoke logic to work
-        -- change active to 1 / 0
-        -- if  _zone[3] == "yes" then
-        --     _zone[3] = 1
-        -- else
-        --     _zone[3] = 0
-        -- end
-    end
-
     -- Seperate troop teams into red and blue for random AI pickups
     if ctld.allowRandomAiTeamPickups == true then
         ctld.redTeams = {}
@@ -6267,24 +6254,25 @@ function ctld.initialize(force)
         if (_coalitionName == 'red' or _coalitionName == 'blue')
                 and type(_coalitionData) == 'table' then
             if _coalitionData.country then --there is a country table
-            for _, _countryData in pairs(_coalitionData.country) do
+                for _, _countryData in pairs(_coalitionData.country) do
 
-                if type(_countryData) == 'table' then
-                    for _objectTypeName, _objectTypeData in pairs(_countryData) do
-                        if _objectTypeName == "static" then
+                    if type(_countryData) == 'table' then
+                        for _objectTypeName, _objectTypeData in pairs(_countryData) do
+                            if _objectTypeName == "static" then
 
-                            if ((type(_objectTypeData) == 'table')
-                                    and _objectTypeData.group
-                                    and (type(_objectTypeData.group) == 'table')
-                                    and (#_objectTypeData.group > 0)) then
+                                if ((type(_objectTypeData) == 'table')
+                                        and _objectTypeData.group
+                                        and (type(_objectTypeData.group) == 'table')
+                                        and (#_objectTypeData.group > 0)) then
 
-                                for _groupId, _group in pairs(_objectTypeData.group) do
-                                    if _group and _group.units and type(_group.units) == 'table' then
-                                        for _unitNum, _unit in pairs(_group.units) do
-                                            if _unit.canCargo == true then
-                                                local _cargoName = env.getValueDictByKey(_unit.name)
-                                                ctld.missionEditorCargoCrates[_cargoName] = _cargoName
-                                                env.info("Crate Found: " .. _unit.name.." - Unit: ".._cargoName)
+                                    for _groupId, _group in pairs(_objectTypeData.group) do
+                                        if _group and _group.units and type(_group.units) == 'table' then
+                                            for _unitNum, _unit in pairs(_group.units) do
+                                                if _unit.canCargo == true then
+                                                    local _cargoName = env.getValueDictByKey(_unit.name)
+                                                    ctld.missionEditorCargoCrates[_cargoName] = _cargoName
+                                                    env.info("Crate Found: " .. _unit.name.." - Unit: ".._cargoName)
+                                                end
                                             end
                                         end
                                     end
@@ -6294,7 +6282,6 @@ function ctld.initialize(force)
                     end
                 end
             end
-        end
         end
     end
     env.info("END search for crates")
@@ -6320,9 +6307,6 @@ math.random(); math.random(); math.random()
 --- Enable/Disable error boxes displayed on screen.
 env.setErrorMessageBoxEnabled(false)
 
--- initialize CTLD in 2 seconds, so other scripts have a chance to modify the configuration before initialization
-ctld.logInfo(string.format("Loading version %s in 2 seconds", ctld.Version))
-timer.scheduleFunction(ctld.initialize, nil, timer.getTime() + 2)
 
 --DEBUG FUNCTION
 --        for key, value in pairs(getmetatable(_spawnedCrate)) do
@@ -6475,3 +6459,7 @@ function ctld.dwacEventHandler:onEvent( event )
     end
 end
 world.addEventHandler(ctld.dwacEventHandler)
+
+-- initialize CTLD in 2 seconds, so other scripts have a chance to modify the configuration before initialization
+ctld.logInfo(string.format("Loading version %s in 2 seconds", ctld.Version))
+timer.scheduleFunction(ctld.initialize, nil, timer.getTime() + 2)

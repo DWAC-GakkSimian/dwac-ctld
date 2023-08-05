@@ -240,6 +240,7 @@ ctld.transportPilotNames = {
     "Akrotiri UH-1-1-1",
     "Akrotiri UH-60-1-1",
     "Akrotiri UH-60-2-1",
+    "Akrotiri Hercules-1-1",
     "Lakatamia KA-50 III-1-1",
     "Lakatamia KA-50 III-2-1",
     "Lakatamia MI-24-1-1",
@@ -262,6 +263,7 @@ ctld.transportPilotNames = {
     "Rene Mouawad UH-1-2-1",
     "Rene Mouawad UH-60-1-1",
     "Rene Mouawad UH-60-2-1",
+    "Rene Mouawad Hercules",
     "Al Duhur KA-50 III-1-1",
     "Al Duhur KA-50 III-2-1",
     "Al Duhur MI-24-1-1",
@@ -273,6 +275,7 @@ ctld.transportPilotNames = {
     "Al Duhur UH-1-2-1",
     "Al Duhur UH-60-1-1",
     "Al Duhur UH-60-1-1",
+    "Al Duhur Hercules-1-1",
     "Taftanaz KA-50 III-1-1",
     "Taftanaz KA-50 III-2-1",
     "Taftanaz MI-24-1-1",
@@ -338,6 +341,7 @@ ctld.transportPilotNames = {
     "Palmyra UH-1-2-1",
     "Palmyra UH-60-1-1",
     "Palmyra UH-60-2-1",
+    "Palmyra Hercules-1-1",
     "Al Assad KA-50 III-1-1",
     "Al Assad KA-50 III-2-1",
     "Al Assad MI-24-1-1",
@@ -455,7 +459,7 @@ ctld.unitActions = {
     ["Ka-50_3"] = { crates=true , troops=false, internal=false },
     ["UH-60L"] = { crates=true , troops=true, internal=true, loadAngles={ 9,3 } },
 	["AV8BNA"] = { crates=true , troops=false, internal=false },
-    ["Hercules"] = { crates=true , troops=false, internal=true }
+    ["Hercules"] = { crates=true , troops=true, internal=true }
 
 }
 
@@ -528,8 +532,8 @@ ctld.spawnableCrates = {
 
         { weight = 752, desc = "2B11 Mortar", unit = "2B11 mortar" },
 
-        { weight = 1034, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 1, cratesRequired = 1 },
-        { weight = 1035, desc = "M-109", unit = "M-109", side = 2, cratesRequired = 1 },
+        { weight = 1034, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 2, cratesRequired = 1 },
+        --{ weight = 1035, desc = "M-109", unit = "M-109", side = 2, cratesRequired = 1 },
 
         { weight = 1036, desc = "Ural-375 Ammo Truck", unit = "Ural-375", side = 1, cratesRequired = 1 },
         { weight = 511, desc = "Ural-375 Ammo Truck (internal)", unit = "Ural-375", side = 1, internal = 1, cratesRequired = 2 },
@@ -6074,24 +6078,25 @@ function ctld.initialize(force)
         if (_coalitionName == 'red' or _coalitionName == 'blue')
                 and type(_coalitionData) == 'table' then
             if _coalitionData.country then --there is a country table
-            for _, _countryData in pairs(_coalitionData.country) do
+                for _, _countryData in pairs(_coalitionData.country) do
 
-                if type(_countryData) == 'table' then
-                    for _objectTypeName, _objectTypeData in pairs(_countryData) do
-                        if _objectTypeName == "static" then
+                    if type(_countryData) == 'table' then
+                        for _objectTypeName, _objectTypeData in pairs(_countryData) do
+                            if _objectTypeName == "static" then
 
-                            if ((type(_objectTypeData) == 'table')
-                                    and _objectTypeData.group
-                                    and (type(_objectTypeData.group) == 'table')
-                                    and (#_objectTypeData.group > 0)) then
+                                if ((type(_objectTypeData) == 'table')
+                                        and _objectTypeData.group
+                                        and (type(_objectTypeData.group) == 'table')
+                                        and (#_objectTypeData.group > 0)) then
 
-                                for _groupId, _group in pairs(_objectTypeData.group) do
-                                    if _group and _group.units and type(_group.units) == 'table' then
-                                        for _unitNum, _unit in pairs(_group.units) do
-                                            if _unit.canCargo == true then
-                                                local _cargoName = env.getValueDictByKey(_unit.name)
-                                                ctld.missionEditorCargoCrates[_cargoName] = _cargoName
-                                                env.info("Crate Found: " .. _unit.name.." - Unit: ".._cargoName)
+                                    for _groupId, _group in pairs(_objectTypeData.group) do
+                                        if _group and _group.units and type(_group.units) == 'table' then
+                                            for _unitNum, _unit in pairs(_group.units) do
+                                                if _unit.canCargo == true then
+                                                    local _cargoName = env.getValueDictByKey(_unit.name)
+                                                    ctld.missionEditorCargoCrates[_cargoName] = _cargoName
+                                                    env.info("Crate Found: " .. _unit.name.." - Unit: ".._cargoName)
+                                                end
                                             end
                                         end
                                     end
@@ -6099,9 +6104,8 @@ function ctld.initialize(force)
                             end
                         end
                     end
-                end
+                end 
             end
-        end
         end
     end
     env.info("END search for crates")
@@ -6129,9 +6133,7 @@ math.random(); math.random(); math.random()
 --- Enable/Disable error boxes displayed on screen.
 env.setErrorMessageBoxEnabled(false)
 
--- initialize CTLD in 2 seconds, so other scripts have a chance to modify the configuration before initialization
-ctld.logInfo(string.format("Loading version %s in 2 seconds", ctld.Version))
-timer.scheduleFunction(ctld.initialize, nil, timer.getTime() + 2)
+
 
 --DEBUG FUNCTION
 --        for key, value in pairs(getmetatable(_spawnedCrate)) do
@@ -6285,3 +6287,7 @@ function ctld.dwacEventHandler:onEvent( event )
     end
 end
 world.addEventHandler(ctld.dwacEventHandler)
+
+-- initialize CTLD in 2 seconds, so other scripts have a chance to modify the configuration before initialization
+ctld.logInfo(string.format("Loading version %s in 2 seconds", ctld.Version))
+timer.scheduleFunction(ctld.initialize, nil, timer.getTime() + 2)
