@@ -581,7 +581,6 @@ ctld.spawnableCrates = {
 
 	},
     ["AA short range"] = {
-
         { weight = 1152, desc = "M1097 Avenger", unit = "M1097 Avenger", internal = 0, side = 1 },
 		{ weight = 1157, desc = "Roland ADS", unit = "Roland ADS", internal = 0, side = 2, cratesRequired = 2 },
         { weight = 604, desc = "M1097 Avenger (internal)", unit = "M1097 Avenger", internal = 1, side = 2, cratesRequired = 2 },
@@ -592,12 +591,11 @@ ctld.spawnableCrates = {
 		{ weight = 605, desc = "Strela-1 9P31(internal)", unit = "Strela-1 9P31", internal = 1, cratesRequired = 2 },
         { weight = 1153, desc = "Strela-1 9P31", unit = "Strela-1 9P31", internal = 0 },
 		{ weight = 1154, desc = "SA-19 Tunguska 2S6", unit = "2S6 Tunguska", internal = 0, cratesRequired = 2 },
-		{ weight = 1400, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", internal = 0, cratesRequired = 2 }
-	    
+		{ weight = 1400, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", internal = 0, cratesRequired = 2 },
+		{ weight = 530, desc = "SAM SA-15 Tor (internal)", unit = "Tor 9A331", internal = 1, side = 2, cratesRequired = 2 },
+		{ weight = 1061, desc = "SAM SA-15 Tor", unit = "Tor 9A331", internal = 0, side = 2, cratesRequired = 1 },	    
     },
     ["AA mid range"] = {
-		{ weight = 530, desc = "SAM SA-15 Tor ", unit = "Tor 9A331 (internal)", internal = 1, side = 2, cratesRequired = 2 },
-		{ weight = 1061, desc = "SAM SA-15 Tor ", unit = "Tor 9A331", internal = 0, side = 2, cratesRequired = 1 },
 		
         -- KUB SYSTEM
         { weight = 801, desc = "KUB Launcher (internal)", unit = "Kub 2P25 ln", internal = 1, cratesRequired = 2 },

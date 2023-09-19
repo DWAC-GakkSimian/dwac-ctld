@@ -51,7 +51,7 @@ ctld.saveFilePath = nil
 ctld.saveFileName = 'BuzKillCTLD_Group_Save.lua'
 ctld.saveStaticFileName = 'BuzKillCTLD_Static_Save.lua'
 if lfs then 
-	ctld.saveFilePath = lfs.writedir()..'Missions\\Saves'
+	ctld.saveFilePath = lfs.writedir()..'Missions\\Saves\\BuzKill'
 	lfs.mkdir(ctld.saveFilePath) -- make path if needed
     ctld.saveStaticFilePath = ctld.saveFilePath..'\\'..ctld.saveStaticFileName
     ctld.saveFilePath = ctld.saveFilePath..'\\'..ctld.saveFileName -- set full path to file
@@ -199,7 +199,7 @@ ctld.JTAC_lock = "all" -- "vehicle" OR "troop" OR "all" forces JTAC to only lock
 ctld.pickupZones = {
     { "London-PickupZone-1", "blue", -1, "yes", 0 },
     { "Dallas-PickupZone-1", "blue", -1, "yes", 0 },
-    { "pickzone3", "blue", -1, "yes", 0 },
+    { "Senaki-PickupZone-1", "blue", -1, "yes", 0 },
     { "pickzone4", "blue", -1, "yes", 0 },
     { "pickzone5", "blue", -1, "yes", 0 },
     { "pickzone6", "blue", -1, "yes", 0 },
@@ -296,21 +296,20 @@ ctld.transportPilotNames = {
     "Dallas-MI24-4-1",
     "Tarawa-MI8-1-1",
     "Tarawa-MI24-1-1",
-    "MEDEVAC #6",
-    "MEDEVAC #7",
-    "MEDEVAC #8",
-    "MEDEVAC #9",
-    "MEDEVAC #10",
-    "MEDEVAC #11",
-    "MEDEVAC #12",
-    "MEDEVAC #13",
-    "MEDEVAC #14",
-    "MEDEVAC #15",
-    "MEDEVAC #16",
-
-    "MEDEVAC RED #1",
-    "MEDEVAC RED #2",
-    "MEDEVAC RED #3",
+    "Senaki-MI8-1-1",
+    "Senaki-MI8-2-1",
+    "Senaki-MI8-3-1",
+    "Senaki-MI8-4-1",
+    "Senaki-UH1H-1-1",
+    "Senaki-UH1H-2-1",
+    "Senaki-UH1H-3-1",
+    "Senaki-UH60L-1-1",
+    "Senaki-UH60L-2-1",
+    "Senaki-UH60L-3-1",
+    "Senaki-MI24-1-1",
+    "Senaki-MI24-2-1",
+    "Senaki-MI24-3-1",
+    "Senaki-MI24-4-1",
     "MEDEVAC RED #4",
     "MEDEVAC RED #5",
     "MEDEVAC RED #6",
@@ -427,7 +426,7 @@ ctld.extractableGroups = {
 ctld.logisticUnits = {
     "London-Warehouse-1",
     "Dallas-Warehouse-1",
-    "logistic3",
+    "Senaki-Warehouse-1",
     "logistic4",
     "logistic5",
     "logistic6",
@@ -595,12 +594,11 @@ ctld.spawnableCrates = {
 		{ weight = 605, desc = "Strela-1 9P31(internal)", unit = "Strela-1 9P31", internal = 1, cratesRequired = 2 },
         { weight = 1153, desc = "Strela-1 9P31", unit = "Strela-1 9P31", internal = 0 },
 		{ weight = 1154, desc = "SA-19 Tunguska 2S6", unit = "2S6 Tunguska", internal = 0, cratesRequired = 2 },
-		{ weight = 1400, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", internal = 0, cratesRequired = 2 }
-	    
+		{ weight = 1400, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", internal = 0, cratesRequired = 2 },
+		{ weight = 530, desc = "SAM SA-15 (internal)", unit = "Tor 9A331", internal = 1, side = 2, cratesRequired = 2 },
+		{ weight = 1061, desc = "SAM SA-15 Tor ", unit = "Tor 9A331", internal = 0, side = 2, cratesRequired = 1 },	    
     },
     ["AA mid range"] = {
-		{ weight = 530, desc = "SAM SA-15 Tor ", unit = "Tor 9A331 (internal)", internal = 1, side = 2, cratesRequired = 2 },
-		{ weight = 1061, desc = "SAM SA-15 Tor ", unit = "Tor 9A331", internal = 0, side = 2, cratesRequired = 1 },
 		
         -- KUB SYSTEM
         { weight = 801, desc = "KUB Launcher (internal)", unit = "Kub 2P25 ln", internal = 1, cratesRequired = 2 },
