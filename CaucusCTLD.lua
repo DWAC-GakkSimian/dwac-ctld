@@ -1098,6 +1098,7 @@ function ctld.spawnFOB(_country, _unitId, _point, _name)
 
     _crate["country"] = _country
     mist.dynAddStatic(_crate)
+
     local _spawnedCrate = StaticObject.getByName(_crate["name"])
     --local _spawnedCrate = coalition.addStaticObject(_country, _crate)
     -- ************************************************************************
@@ -1121,6 +1122,66 @@ function ctld.spawnFOB(_country, _unitId, _point, _name)
     _tower["country"] = _country
 
     mist.dynAddStatic(_tower)
+
+    local _farp = {
+        ["type"] = "SINGLE_HELIPAD", -- "Invisible FARP"
+        --   ["unitId"] = _id,
+        ["y"] = _point.z + 50,
+        ["x"] = _point.x + 50,
+        ["name"] = _name .. "FARP #" .. _id,
+        ["category"] = "Heliports",
+        ["heliport_modulation"] = 0,
+        ["heliport_frequency"] = 127.5,
+        ["heliport_callsign_id"] = 1,
+        ["heading"] = 0,
+        ["shape_name"] = "FARP", -- "invisiblefarp"
+    }
+
+    local _ammoFarp = {
+        ["type"] = "FARP Ammo Dump Coating", -- FARP
+        --   ["unitId"] = _id,
+        ["y"] = _point.z + 20,
+        ["x"] = _point.x + 20,
+        ["name"] = _name .. "ammo dump #" .. _id,
+        ["category"] = "Fortifications",
+        ["canCargo"] = false,        
+        ["heading"] = 0,
+
+    }
+
+    local _fuelFarp = {
+        ["type"] = "FARP Fuel Depot", -- FARP
+        --   ["unitId"] = _id,
+        ["y"] = _point.z + 30,
+        ["x"] = _point.x + 20,
+        ["name"] = _name .. "fuel dump #" .. _id,
+        ["category"] = "Fortifications",
+        ["canCargo"] = false,        
+        ["heading"] = 0,
+    }    
+
+    local _windSockFarp = {
+        ["type"] = "Windsock", -- FARP
+        --   ["unitId"] = _id,
+        ["y"] = _point.z + 35,
+        ["x"] = _point.x + 20,
+        ["name"] = _name .. "windsock #" .. _id,
+        ["category"] = "H-Windsock_RW",
+        ["canCargo"] = false,        
+        ["heading"] = 0,
+    }    
+
+    --coalition.addStaticObject(_country, _tower)
+    _farp["country"] = _country
+    _fuelFarp["country"] = _country
+    _ammoFarp["country"] = _country
+    _windSockFarp["country"] = _country
+            
+    mist.dynAddStatic(_farp)
+    mist.dynAddStatic(_ammoFarp)
+    mist.dynAddStatic(_fuelFarp)
+    mist.dynAddStatic(_windSockFarp)
+
     -- ************************************************************************
     -- Load/Save persistence
     -- ************************************************************************
