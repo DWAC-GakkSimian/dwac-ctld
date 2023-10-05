@@ -27,7 +27,7 @@ ctld.Id = "CTLD - "
 
 --- Version.
 ctld.Version = "20230804.01"
-ctld.DWACVersion = "20230804.01"
+ctld.DWACVersion = "20231005.01"
 
 -- debug level, specific to this module
 ctld.Debug = true
