@@ -112,7 +112,7 @@ ctld.cratesRequiredForFOB = 1 -- The amount of crates required to build a FOB. O
 
 ctld.troopPickupAtFOB = true -- if true, troops can also be picked up at a created FOB
 
-ctld.buildTimeFOB = 15 --120 --time in seconds for the FOB to be built
+ctld.buildTimeFOB = 120 --time in seconds for the FOB to be built
 
 ctld.crateWaitTime = 10 -- time in seconds to wait before you can spawn another crate
 
