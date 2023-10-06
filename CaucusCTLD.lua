@@ -1186,6 +1186,10 @@ function ctld.spawnFOB(_country, _unitId, _point, _name)
     -- Load/Save persistence
     -- ************************************************************************
     ctld.addToSpawnedStatics( _tower ) -- for periodic saving and reload upon mission start
+    ctld.addToSpawnedStatics( _farp )
+    ctld.addToSpawnedStatics( _ammoFarp )
+    ctld.addToSpawnedStatics( _fuelFarp )
+    ctld.addToSpawnedStatics( _windSockFarp )
 
     return _spawnedCrate
 end
