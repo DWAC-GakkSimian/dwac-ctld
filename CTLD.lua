@@ -44,7 +44,8 @@ ctld.alreadyInitialized = false -- if true, ctld.initialize() will not run
 -- Load/Save persistence
 -- ************************************************************************
 ctld.allowSave = true
-ctld.spawnedGroups = {} -- list of mist.dynAdd ready groups 'unpacked' during CTLD operations.
+ctld.allowJTAC_TextToSpeech = false -- prevent jtac from attempting SRS audio
+ctld.spawnedGroups = {} -- list of group names 'unpacked' during CTLD operations.
 ctld.spawnedStatics = {} -- used for FOB outposts
 ctld.saveInterval = 900 -- = 15 minutes
 ctld.saveFilePath = nil
@@ -79,7 +80,7 @@ ctld.maximumDistanceLogistic = 200 -- max distance from vehicle to logistics to 
 ctld.maximumSearchDistance = 4000 -- max distance for troops to search for enemy
 ctld.maximumMoveDistance = 2000 -- max distance for troops to move from drop point if no enemy is nearby
 
-ctld.minimumDeployDistance = 1000 -- minimum distance from a friendly pickup zone where you can deploy a crate
+ctld.minimumDeployDistance = 500 -- minimum distance from a friendly pickup zone where you can deploy a crate
 
 ctld.numberOfTroops = 10 -- default number of troops to load on a transport heli or C-130 
 							-- also works as maximum size of group that'll fit into a helicopter unless overridden
@@ -4449,13 +4450,13 @@ function ctld.spawnCrateGroup(_heli, _positions, _types)
     --mist function
     _group.category = Group.Category.GROUND
     _group.country = _heli:getCountry()
-    local _groupName = mist.dynAdd(_group).name
-    local _spawnedGroup = Group.getByName(_groupName)
+    local _mistGroupName = mist.dynAdd(_group).name
+    local _spawnedGroup = Group.getByName(_mistGroupName)
 
     -- ************************************************************************
     -- Load/Save persistence
     -- ************************************************************************
-    ctld.addToSpawnedGroups( _group ) -- for periodic saving and reload upon mission start
+    ctld.addToSpawnedGroups( _mistGroupName ) -- for periodic saving and reload upon mission start
 
     return _spawnedGroup
 end
@@ -4512,15 +4513,14 @@ function ctld.spawnDroppedGroup(_point, _details, _spawnBehind, _maxSearch)
     --switch to MIST
     _group.category = Group.Category.GROUND;
     _group.country = _details.country;
-
-    local _spawnedGroup = Group.getByName(mist.dynAdd(_group).name)
+    
+    local _mistGroupName = mist.dynAdd(_group).name
+    local _spawnedGroup = Group.getByName(_mistGroupName)
 
     -- ************************************************************************
     -- Load/Save persistence
     -- ************************************************************************
-    ctld.addToSpawnedGroups( _group ) -- for periodic saving and reload upon mission start
-
-    --local _spawnedGroup = coalition.addGroup(_details.country, Group.Category.GROUND, _group)
+    ctld.addToSpawnedGroups( _mistGroupName ) -- for periodic saving and reload upon mission start
 
 
     -- find nearest enemy and head there
@@ -5679,7 +5679,7 @@ function ctld.notifyCoalition(_message, _displayFor, _side, _radio, _shortMessag
         _shortMessage = _message
     end
     
-    if STTS and STTS.TextToSpeech and _radio and _radio.freq then
+    if ctld.allowJTAC_TextToSpeech and STTS and STTS.TextToSpeech and _radio and _radio.freq then
         local _freq = _radio.freq
         local _modulation = _radio.mod or "FM"
         local _volume = _radio.volume or "1.0"
@@ -6797,8 +6797,18 @@ end
 
 function ctld.saveSpawnedGroups()
     -- groups and statics
-    if ctld.spawnedGroups ~= nil then
-        DwacUtils.saveTable( ctld.saveFilePath, "ctldSpawnedGroups", ctld.spawnedGroups )
+    if ctld.spawnedGroups ~= nil and ctld.spawnedGroups ~= {} then
+        local _spawnGroups = {}
+        
+        for _,_groupName in pairs( ctld.spawnedGroups ) do
+            local _group = ctld.prepGroupForSave( _groupName )
+            if _group ~= nil then
+                table.insert( _spawnGroups, _group )
+            end
+        end
+        if _spawnGroups ~= nil then
+            DwacUtils.saveTable( ctld.saveFilePath, "ctldSpawnedGroups", _spawnGroups )
+        end
     end
     if ctld.spawnedStatics ~= nil then
         DwacUtils.saveTable( ctld.saveStaticFilePath, "ctldSpawnedStatics", ctld.spawnedStatics )
@@ -6812,9 +6822,15 @@ function ctld.loadSpawnedGroups()
     env.info( "CTLD Group File Path: "..ctld.saveFilePath)
     DwacUtils.loadTable( ctld.saveFilePath ) -- creates a global table from name in file.  See ctld.saveSpawnedGroups() for hard-coded name
     if ctldSpawnedGroups ~= nil then
-        ctld.spawnedGroups = ctldSpawnedGroups
         for _,_group in pairs( ctldSpawnedGroups ) do
+            -- set new group and unit ids
+            _group.groupId = ctld.getNextGroupId()
+            for _,_unit in pairs( _group.units ) do
+                _unit.id = ctld.getNextUnitId()
+            end
+
             mist.dynAdd( _group )
+            table.insert( ctld.spawnedGroups, _group.name )
         end
     end
 
@@ -6845,14 +6861,50 @@ function ctld.loadSpawnedGroups()
     end
 end
 
-function ctld.addToSpawnedGroups( _group )
-    env.info( "CTLD spawned group added to save collection: ".._group.name )
-    if _group ~= nil then
-        table.insert( ctld.spawnedGroups, _group )
+function ctld.prepGroupForSave( _groupName )
+    local _dcsGroup = Group.getByName( _groupName )
+
+    if _dcsGroup ~= nil then
+        local _group = {
+            ["visible"] = false,
+            ["groupId"] = _dcsGroup.id,
+            ["hidden"] = false,
+            ["units"] = {},
+            ["name"] = _groupName,
+            ["task"] = {},
+        }
+
+        local _units = _dcsGroup:getUnits()
+        if _units ~= nil then
+            for _,_unit in pairs(_units) do
+                local _unitHealth = _unit:getLife()
+                local _unitPoint = _unit:getPoint()
+                local _heading = mist.getHeading( _unit )
+                if _group.country == nil then
+                    _group.country = _unit:getCountry()
+                end
+                local _unitDetail = { 
+                    type = _unit:getTypeName(), 
+                    unitId = _unit.id, 
+                    name = _dcsGroup:getName()..tostring( _unit.id )
+                }
+                table.insert( _group.units, ctld.createUnit( _unitPoint.x, _unitPoint.z, _heading, _unitDetail))
+            end
+        end
+        _group.category = _dcsGroup:getCategory()
+
+        return _group
     end
 end
+
+function ctld.addToSpawnedGroups( _groupName )
+    env.info( "CTLD spawned group added to save collection: ".._groupName )
+    if _groupName ~= nil then
+        table.insert( ctld.spawnedGroups, _groupName )
+    end
+end
+
 function ctld.addToSpawnedStatics( _static )
-    ctld.p( _static )
     env.info( "CTLD spawned static added to save collection: ".._static.name )
     if _static ~= nil then
         table.insert( ctld.spawnedStatics, _static )
