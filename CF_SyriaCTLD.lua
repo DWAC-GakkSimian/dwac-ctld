@@ -531,9 +531,9 @@ ctld.spawnableCrates = {
         { weight = 1020, desc = "HMMWV - JTAC", unit = "Hummer", side = 2, }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
         { weight = 1025, desc = "SKP-11 - JTAC", unit = "SKP-11", side = 1, }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
 
-        { weight = 752, desc = "2B11 Mortar", unit = "2B11 mortar" },
+        --{ weight = 752, desc = "2B11 Mortar", unit = "2B11 mortar" },
 
-        { weight = 1034, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 2, cratesRequired = 1 },
+        --{ weight = 1034, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 2, cratesRequired = 1 },
         --{ weight = 1035, desc = "M-109", unit = "M-109", side = 2, cratesRequired = 1 },
 
         { weight = 1036, desc = "Ural-375 Ammo Truck", unit = "Ural-375", side = 1, cratesRequired = 1 },
