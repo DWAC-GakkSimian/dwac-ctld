@@ -27,7 +27,7 @@ ctld.Id = "CTLD - "
 
 --- Version.
 ctld.Version = "20230723.01"
-ctld.DWACVersion = "20231005.01"
+ctld.DWACVersion = "20240111.01"
 
 -- debug level, specific to this module
 ctld.Debug = true
@@ -537,21 +537,21 @@ ctld.spawnableCrates = {
         --{ weight = 1035, desc = "M-109", unit = "M-109", side = 2, cratesRequired = 1 },
 
         { weight = 1036, desc = "Ural-375 Ammo Truck", unit = "Ural-375", side = 1, cratesRequired = 1 },
-        { weight = 511, desc = "Ural-375 Ammo Truck (internal)", unit = "Ural-375", side = 1, internal = 1, cratesRequired = 2 },
+        { weight = 811, desc = "Ural-375 Ammo Truck (internal)", unit = "Ural-375", side = 1, internal = 1, cratesRequired = 2 },
         { weight = 1037, desc = "M-818 Ammo Truck", unit = "M 818", side = 2, cratesRequired = 1 },
-        { weight = 509, desc = "M-818 Ammo Truck (internal)", unit = "M 818", side = 2, internal = 1, cratesRequired = 2 },
+        { weight = 809, desc = "M-818 Ammo Truck (internal)", unit = "M 818", side = 2, internal = 1, cratesRequired = 2 },
 
         { weight = 1600, desc = "FOB Crate - Small", unit = "FOB-SMALL" }, -- Builds a FOB! - requires 3 * ctld.cratesRequiredForFOB
     },
     ["AA short range"] = {
         { weight = 1045, desc = "SAM SA-15 Tor", unit = "Tor 9A331", side = 2, cratesRequired = 1 },
-        { weight = 510, desc = "SAM SA-15 Tor (internal)", unit = "Tor 9A331", side = 2, internal = 1, cratesRequired = 2 },
+        { weight = 810, desc = "SAM SA-15 Tor (internal)", unit = "Tor 9A331", side = 2, internal = 1, cratesRequired = 2 },
 
         { weight = 1038, desc = "Strela-1 9P31", unit = "Strela-1 9P31", side = 1, cratesRequired = 1 },
-        { weight = 512, desc = "Strela-1 9P31 (internal)", unit = "Strela-1 9P31", side = 1, internal = 1, cratesRequired = 2 },
+        { weight = 812, desc = "Strela-1 9P31 (internal)", unit = "Strela-1 9P31", side = 1, internal = 1, cratesRequired = 2 },
 
         { weight = 1039, desc = "2S6 Tunguska", unit = "2S6 Tunguska", side = 2, cratesRequired = 1 },
-        { weight = 513, desc = "2S6 Tunguska (internal)", unit = "2S6 Tunguska", side = 2, internal = 1, cratesRequired = 2 },
+        { weight = 813, desc = "2S6 Tunguska (internal)", unit = "2S6 Tunguska", side = 2, internal = 1, cratesRequired = 2 },
     },
     ["AA mid range"] = {
         -- KUB SYSTEM
@@ -562,22 +562,22 @@ ctld.spawnableCrates = {
 
         -- BUK System
         { weight = 1075, desc = "BUK Launcher", unit = "SA-11 Buk LN 9A310M1" },
-        { weight = 540, desc = "BUK Launcher (internal)", unit = "SA-11 Buk LN 9A310M1", internal = 1, cratesRequired = 2 },
+        { weight = 840, desc = "BUK Launcher (internal)", unit = "SA-11 Buk LN 9A310M1", internal = 1, cratesRequired = 2 },
         { weight = 1080, desc = "BUK Search Radar", unit = "SA-11 Buk SR 9S18M1" },
-        { weight = 541, desc = "BUK Search Radar (internal)", unit = "SA-11 Buk SR 9S18M1", internal = 1, cratesRequired = 2 },
+        { weight = 841, desc = "BUK Search Radar (internal)", unit = "SA-11 Buk SR 9S18M1", internal = 1, cratesRequired = 2 },
         { weight = 1085, desc = "BUK CC Radar", unit = "SA-11 Buk CC 9S470M1" },
-        { weight = 542, desc = "BUK CC Radar (internal)", unit = "SA-11 Buk CC 9S470M1", internal = 1, cratesRequired = 2 },
+        { weight = 842, desc = "BUK CC Radar (internal)", unit = "SA-11 Buk CC 9S470M1", internal = 1, cratesRequired = 2 },
         { weight = 1090, desc = "BUK Repair", unit = "BUK Repair" }
         -- END of BUK
     },
     ["AA long range"] = {
         -- Patriot System
         { weight = 1055, desc = "Patriot Launcher", unit = "Patriot ln", side = 2 },
-        { weight = 550, desc = "Patriot Launcher (internal)", unit = "Patriot ln", side = 2, internal = 1, cratesRequired = 2 },
+        { weight = 5850, desc = "Patriot Launcher (internal)", unit = "Patriot ln", side = 2, internal = 1, cratesRequired = 2 },
         { weight = 1056, desc = "Patriot Radar", unit = "Patriot str" , side = 2 },
-        { weight = 551, desc = "Patriot Radar (internal)", unit = "Patriot str" , side = 2, internal = 1, cratesRequired = 2 },
+        { weight = 851, desc = "Patriot Radar (internal)", unit = "Patriot str" , side = 2, internal = 1, cratesRequired = 2 },
         { weight = 1057, desc = "Patriot ECS", unit = "Patriot ECS", side = 2 },
-        { weight = 552, desc = "Patriot ECS (internal)", unit = "Patriot ECS", side = 2, internal = 1, cratesRequired = 2 },
+        { weight = 852, desc = "Patriot ECS (internal)", unit = "Patriot ECS", side = 2, internal = 1, cratesRequired = 2 },
         { weight = 1053, desc = "Patriot ICC", unit = "Patriot cp", side = 2 },
         { weight = 1054, desc = "Patriot EPP", unit = "Patriot EPP", side = 2 },
         { weight = 1058, desc = "Patriot AMG (optional)", unit = "Patriot AMG" , side = 2 },
